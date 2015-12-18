@@ -1,0 +1,30 @@
+{
+  "name": "bedrock-key",
+  "version": "0.0.1-dev",
+  "description": "Bedrock key",
+  "main": "./lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digitalbazaar/bedrock-key.git"
+  },
+  "author": {
+    "name": "Digital Bazaar, Inc.",
+    "email": "support@digitalbazaar.com",
+    "url": "http://digitalbazaar.com"
+  },
+  "bugs": {
+    "url": "https://github.com/digitalbazaar/bedrock-key/issues"
+  },
+  "homepage": "https://github.com/digitalbazaar/bedrock-key",
+  "dependencies": {
+    "bcrypt": "^0.8.5",
+    "bedrock": "^1.0.6",
+    "bedrock-identity": "^1.0.2",
+    "bedrock-mongodb": "^1.0.2",
+    "bedrock-permission": "^1.0.1",
+    "bedrock-validation": "^1.0.0"
+  }
+}
