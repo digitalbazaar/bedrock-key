@@ -1,6 +1,6 @@
 {
   "name": "bedrock-key",
-  "version": "2.0.0",
+  "version": "2.0.1-dev",
   "description": "Bedrock key",
   "main": "./lib/main.js",
   "scripts": {
