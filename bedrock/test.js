@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2015 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
  */
 var bedrock = require('bedrock');
 var config = bedrock.config;
-var database = require('bedrock-mongodb');
-brKey = require('../lib/main.js');
+require('bedrock-mongodb');
+require('../lib/main.js');
 
 bedrock.events.on('bedrock.test.configure', function() {
   // mongodb config
