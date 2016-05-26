@@ -4,7 +4,7 @@
 var bedrock = require('bedrock');
 var config = bedrock.config;
 require('bedrock-mongodb');
-require('../lib/main.js');
+require('../lib');
 
 bedrock.events.on('bedrock.test.configure', function() {
   // mongodb config

@@ -8,7 +8,7 @@
 
 var bedrock = require('bedrock');
 var config = bedrock.config;
-var brKey = require('../lib/main.js');
+var brKey = require('../lib');
 
 describe('bedrock-key', function() {
   it('should validate a keypair', function(done) {

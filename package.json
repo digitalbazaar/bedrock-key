@@ -2,7 +2,7 @@
   "name": "bedrock-key",
   "version": "3.0.1-dev",
   "description": "Bedrock key",
-  "main": "./lib/main.js",
+  "main": "./lib",
   "scripts": {
     "test": "node ./bedrock/test.js test"
   },
