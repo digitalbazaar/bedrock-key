@@ -1,5 +1,8 @@
 # bedrock-key ChangeLog
 
+### Changed
+- Update dependencies.
+
 ## 3.1.0 - 2016-05-27
 
 ### Added
