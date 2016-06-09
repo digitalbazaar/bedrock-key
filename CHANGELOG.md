@@ -1,5 +1,10 @@
 # bedrock-key ChangeLog
 
+## 3.1.2 - 2016-06-09
+
+### Fixed
+- Allow authenticated users to view public key data.
+
 ## 3.1.1 - 2016-06-07
 
 ### Changed
