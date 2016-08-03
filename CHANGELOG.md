@@ -1,5 +1,10 @@
 # bedrock-key ChangeLog
 
+## 3.1.3 - 2016-08-03
+
+### Fixed
+- Check proper resource in permission check.
+
 ## 3.1.2 - 2016-06-09
 
 ### Fixed
