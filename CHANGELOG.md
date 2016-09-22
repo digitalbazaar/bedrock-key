@@ -1,5 +1,10 @@
 # bedrock-key ChangeLog
 
+## 3.1.4 - 2016-09-22
+
+### Changed
+- Restructure test framework for CI.
+
 ## 3.1.3 - 2016-08-03
 
 ### Fixed
