@@ -1,10 +1,10 @@
 {
-  "name": "bedrock-key",
-  "version": "3.1.4-0",
-  "description": "Bedrock key",
-  "main": "./lib",
+  "name": "bedrock-key-test",
+  "version": "0.0.1-0",
+  "description": "Bedrock key test",
+  "main": "test",
   "scripts": {
-    "test": "node ./bedrock/test.js test"
+    "test": "node --preserve-symlinks test.js test"
   },
   "repository": {
     "type": "git",
@@ -21,14 +21,13 @@
   "homepage": "https://github.com/digitalbazaar/bedrock-key",
   "dependencies": {
     "async": "^1.5.2",
+    "bedrock": "^1.0.6",
+    "bedrock-mongodb": "^3.0.0",
+    "bedrock-permission": "^2.3.0",
+    "bedrock-test": "^1.0.0",
     "buffer-equal": "^1.0.0"
   },
   "optionalDependencies": {
     "ursa": "~0.9.1"
-  },
-  "peerDependencies": {
-    "bedrock": "^1.0.6",
-    "bedrock-mongodb": "^3.0.0",
-    "bedrock-permission": "^2.3.0"
   }
 }

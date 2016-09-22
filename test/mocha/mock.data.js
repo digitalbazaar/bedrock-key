@@ -1,10 +1,13 @@
 /*
  * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
  */
-var config = require('bedrock').config;
 
-config.key.test = {};
-config.key.test.goodKeyPair = {
+'use strict';
+
+var mock = {};
+module.exports = mock;
+
+mock.goodKeyPair = {
   publicKeyPem: '-----BEGIN PUBLIC KEY-----\n' +
     'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArpPmWDG3MCn3simEGNIe\n' +
     'seNe3epn81gLnWXjup458yXgjUYFqKcFlsV5oW4vSF5EEQfPqWB+E5NWYfE9IioQ\n' +
@@ -44,7 +47,7 @@ config.key.test.goodKeyPair = {
 };
 
 // the public and private keys are valid, but do not match
-config.key.test.badKeyPair = {
+mock.badKeyPair = {
   publicKeyPem: '-----BEGIN PUBLIC KEY-----\n' +
     'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWDnqsCB2eYSGicntVHU\n' +
     '1nqzBdlInoLkNzrjp5nd7b57kZQwJteYtlnjVa4WD39iNnJbsLlpFsUJSL7TvgzC\n' +
@@ -84,7 +87,7 @@ config.key.test.badKeyPair = {
 };
 
 // the public key is invalid, the private key is valid
-config.key.test.badPublicKey = {
+mock.badPublicKey = {
   publicKeyPem: '-----BEGIN PUBLIC KEY-----\n' +
     'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n' +
     '-----END PUBLIC KEY-----\n',
@@ -118,7 +121,7 @@ config.key.test.badPublicKey = {
 };
 
 // the public key is valid, the private key is invalid
-config.key.test.badPrivateKey = {
+mock.badPrivateKey = {
   publicKeyPem: '-----BEGIN PUBLIC KEY-----\n' +
     'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArpPmWDG3MCn3simEGNIe\n' +
     'seNe3epn81gLnWXjup458yXgjUYFqKcFlsV5oW4vSF5EEQfPqWB+E5NWYfE9IioQ\n' +
