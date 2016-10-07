@@ -4,8 +4,44 @@
 
 'use strict';
 
+var helpers = require('./helpers');
+
 var mock = {};
 module.exports = mock;
+
+var identities = mock.identities = {};
+var userName;
+
+// identity with permission to add public keys
+userName = 'regularUser';
+identities[userName] = {};
+identities[userName].identity = helpers.createIdentity(userName);
+identities[userName].identity.sysResourceRole.push({
+  sysRole: 'bedrock-key.test',
+  generateResource: 'id'
+});
+
+// identity with permission to add public keys
+userName = 'regularUser2';
+identities[userName] = {};
+identities[userName].identity = helpers.createIdentity(userName);
+identities[userName].identity.sysResourceRole.push({
+  sysRole: 'bedrock-key.test',
+  generateResource: 'id'
+});
+
+// identity with permission to access all public keys (Admin)
+userName = 'adminUser';
+identities[userName] = {};
+identities[userName].identity = helpers.createIdentity(userName);
+identities[userName].identity.sysResourceRole.push({
+  sysRole: 'bedrock-key.test'
+});
+
+// identity with no permissions
+userName = 'noPermissionUser';
+identities[userName] = {};
+identities[userName].identity = helpers.createIdentity(userName);
 
 mock.goodKeyPair = {
   publicKeyPem: '-----BEGIN PUBLIC KEY-----\n' +
@@ -43,6 +79,45 @@ mock.goodKeyPair = {
     'BtoWZ5kCgYEAnvcfRx56ZvUkWJiSI0me+M20A74IGwxDPF87XuGPSEqcoLSc1qJM\n' +
     '6LtOFUE7nFVEqFMN2IhW59qb2eCg7XpeEQic4aqNkc8WtuMEavHRTucsEWk+ypZv\n' +
     'JCxLDG7o3iSqT+DNbYnDI7aUCuM6Guji98q3IvBnW5hj+jbmo4sfRDQ=\n' +
+    '-----END RSA PRIVATE KEY-----\n'
+};
+
+mock.goodKeyPair2 = {
+  publicKeyPem: '-----BEGIN PUBLIC KEY-----\n' +
+    'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy8uiQkqJ/rbKE/W3ofA4\n' +
+    'U/QbQ5TSHq8tkCNTfoJX7vpJRS3aVw7Etz3BNVfOPAPkqf2pxdTxdsdHO6K0PWkz\n' +
+    'JTk3gRTvtUpFa2tavMDjm2WwYKM1uXTJwj968r2n5yzf7zZ1PeXU3Vy0JGOriDnM\n' +
+    'Xg+FrywLYYwEtewPkK3DcpmQOh0ZhLr7PEGrLU3NxiT0yYkcflNEojfx7ONko0jS\n' +
+    'zbfHM0Erf7dcbNSAG6HwvtfaW6LKOOzgkZ2jcVOoR5iOMkRLFzOnfist11tMPpL3\n' +
+    'cVlCyJS41LagsJZsjjskmh4eWs28v84j4syk/f8ru/AkTmNp3LvPAEFI8z+kdmYx\n' +
+    '0QIDAQAB\n' +
+    '-----END PUBLIC KEY-----\n',
+  privateKeyPem: '-----BEGIN RSA PRIVATE KEY-----\n' +
+    'MIIEowIBAAKCAQEAy8uiQkqJ/rbKE/W3ofA4U/QbQ5TSHq8tkCNTfoJX7vpJRS3a\n' +
+    'Vw7Etz3BNVfOPAPkqf2pxdTxdsdHO6K0PWkzJTk3gRTvtUpFa2tavMDjm2WwYKM1\n' +
+    'uXTJwj968r2n5yzf7zZ1PeXU3Vy0JGOriDnMXg+FrywLYYwEtewPkK3DcpmQOh0Z\n' +
+    'hLr7PEGrLU3NxiT0yYkcflNEojfx7ONko0jSzbfHM0Erf7dcbNSAG6HwvtfaW6LK\n' +
+    'OOzgkZ2jcVOoR5iOMkRLFzOnfist11tMPpL3cVlCyJS41LagsJZsjjskmh4eWs28\n' +
+    'v84j4syk/f8ru/AkTmNp3LvPAEFI8z+kdmYx0QIDAQABAoIBAGxHvOWl/x4D9uiW\n' +
+    'BMSZAwSwTZAh0WaWQwozithL3vbNqwKDs1/QK/sEZ9S025INq4AalArV8pneld18\n' +
+    'vHFopNEhTnlaK2bSmIHTn3lsr0JQzF78OL5Z7B02Z1f0JvLwZ+cMs0x5Ahm/eMNg\n' +
+    '5bHSq+BKNQh2yXFB2Prj+v0vJgqL06RP9AkmidjI1p/fFJN3K3cf5FYZ7LAlF2Kz\n' +
+    'gw5TeH2BePDw6njjBUGJ9AjGqnvivJh+0i00/doX/dGg7hvVFxQLWjj9SwUBl/3f\n' +
+    'mfnG+jUH9PLO+KBVwlBOt2wwVpmp+PPfvqPCRJnelYSiphoKl1jioFVJ+f6aJrbk\n' +
+    'um0DDzECgYEA9pCmwr5IOdO2j3XVsYS8mu4Jqc9b2cFCt1DbQ2HusGkvF0Nyhgpo\n' +
+    'v8dzvaIXiMyo4Rql15GaK3b8Pd4IroPELXaWULe2KhmthF/BYslXu2i2M4N6VMBC\n' +
+    'sJaExd4wMaQrqEOB4rV04V8X8A/YRNBG4SIMjZtgEjjIdz00BgPxXV0CgYEA05gD\n' +
+    'CWr6rz1PLDWG2t8E6tHZe66l/zW6DpwoUXha4rX6eBa6qS4DIQjelx9oow0W+xy3\n' +
+    '2ZN8iClMckZdVdHVXvt9pQ8o4l5VNF7KphFZWRLY9r0I9Nf3UZR6RTtVVkUdiA2D\n' +
+    'Xo/SpOdb/RwGyJinPsBPlnboPpv2YTRzUJ836wUCgYEApGjICcs/9e9KKFb2ayyL\n' +
+    'ZvOa1fRC1uybRAlSa5f9xPwePnDnCKIgPuEMOELBVqLBaXiPZTLdjmYExGwtddC/\n' +
+    'G2Gb0a7udRwyK7Z+CRUgvwKPm8Hr7F9XGNEFL7t8f11tDwIUtcsxaKY0HAs0to36\n' +
+    '9Vvy6unUIdJjOb9B1VEDvLECgYBtGfR25rJbqUEpim/+awAeFBYPr/3nmcxVvC8N\n' +
+    '0wEJ5MtBIHcexJrYbbpYMdnCOP2gfS5PAb00eBby1VVK6ucaEpK2iRqLnhhQ6I+V\n' +
+    'EV0AkLdOgiocFT9w0R46lF1sHjcb79vM5lu2q5TC7bCRviR+NqrS6nzVy5U+iczr\n' +
+    'xS0QAQKBgBuNF/C9lctENVsP5sm/Uxlx0pmkSIArxWQEUQZ/4pznalS3pRiDkFgF\n' +
+    '9JsHo8vewA6WCZ/UBQC3T2HH0NUEezvdwehHT3mbtElfXvvt6sUjCFN2v/cDRPBp\n' +
+    'wHgbbc5edS/Y+RKEVgylsnXYN+jKf08y4lx2quyypONMeqyGr4Gn\n' +
     '-----END RSA PRIVATE KEY-----\n'
 };
 
