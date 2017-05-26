@@ -20,15 +20,14 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-key",
   "dependencies": {
-    "async": "^1.5.2",
-    "buffer-equal": "^1.0.0"
-  },
-  "optionalDependencies": {
-    "ursa": "~0.9.1"
+    "async": "^1.5.2"
   },
   "peerDependencies": {
     "bedrock": "^1.4.1",
     "bedrock-mongodb": "^3.0.0",
     "bedrock-permission": "^2.4.2"
+  },
+  "engines": {
+    "node": ">=6"
   }
 }

@@ -3,6 +3,7 @@
   "version": "0.0.1-0",
   "description": "Bedrock key test",
   "main": "test",
+  "private": true,
   "scripts": {
     "test": "node --preserve-symlinks test.js test"
   },
@@ -26,10 +27,6 @@
     "bedrock-mongodb": "^3.0.0",
     "bedrock-permission": "^2.4.2",
     "bedrock-test": "^1.0.0",
-    "buffer-equal": "^1.0.0",
     "uuid": "^2.0.3"
-  },
-  "optionalDependencies": {
-    "ursa": "~0.9.1"
   }
 }
