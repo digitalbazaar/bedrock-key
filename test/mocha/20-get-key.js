@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
 /* globals it, describe, should, before, beforeEach */
 /* jshint node: true */
@@ -51,7 +51,7 @@ describe('bedrock-key API: getPublicKey', () => {
               should.not.exist(result.privateKey);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -77,7 +77,7 @@ describe('bedrock-key API: getPublicKey', () => {
               should.not.exist(result.privateKey);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -102,7 +102,7 @@ describe('bedrock-key API: getPublicKey', () => {
               result.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
               callback(err, result);
             });
-        }],
+        }]
       }, done);
     });
 
@@ -125,7 +125,7 @@ describe('bedrock-key API: getPublicKey', () => {
             err.name.should.equal('NotFound');
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -155,7 +155,7 @@ describe('bedrock-key API: getPublicKey', () => {
                 privateKey.privateKeyPem);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -192,7 +192,7 @@ describe('bedrock-key API: getPublicKey', () => {
               should.not.exist(result.privateKey);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -217,7 +217,7 @@ describe('bedrock-key API: getPublicKey', () => {
               should.not.exist(result.privateKey);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -258,7 +258,7 @@ describe('bedrock-key API: getPublicKey', () => {
               should.not.exist(result.privateKey);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -290,7 +290,7 @@ describe('bedrock-key API: getPublicKey', () => {
               should.not.exist(privateResult);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -327,7 +327,7 @@ describe('bedrock-key API: getPublicKey', () => {
               should.not.exist(privateResult);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 

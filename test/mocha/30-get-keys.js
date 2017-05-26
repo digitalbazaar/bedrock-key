@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
 /* globals it, describe, should, before, beforeEach */
 /* jshint node: true */
@@ -53,7 +53,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               result[0].publicKey.owner.should.equal(queryId);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -78,7 +78,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               result.should.have.length(0);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -104,7 +104,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               result.should.have.length(0);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -137,7 +137,7 @@ describe('bedrock-key API: getPublicKeys', () => {
                 privateKey.privateKeyPem);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -154,8 +154,8 @@ describe('bedrock-key API: getPublicKeys', () => {
       async.auto({
         insert: function(callback) {
           async.series([
-            callback => {brKey.addPublicKey(actor, samplePublicKey, callback)},
-            callback => {brKey.addPublicKey(actor, samplePublicKey2, callback)}
+            callback => brKey.addPublicKey(actor, samplePublicKey, callback),
+            callback => brKey.addPublicKey(actor, samplePublicKey2, callback)
           ], callback);
         },
         test: ['insert', callback => {
@@ -173,7 +173,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               result[1].publicKey.owner.should.equal(queryId);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -200,10 +200,9 @@ describe('bedrock-key API: getPublicKeys', () => {
         },
         insert: ['setup', function(callback) {
           async.series([
-            callback => {brKey.addPublicKey(
-              actor, samplePublicKey, callback)},
-            callback => {brKey.addPublicKey(
-              secondActor, samplePublicKey2, callback)}
+            callback => brKey.addPublicKey(actor, samplePublicKey, callback),
+            callback => brKey.addPublicKey(
+              secondActor, samplePublicKey2, callback)
           ], callback);
         }],
         get1: ['insert', callback => {
@@ -228,7 +227,7 @@ describe('bedrock-key API: getPublicKeys', () => {
             samplePublicKey2.publicKeyPem);
           tr2[0].publicKey.owner.should.equal(queryId2);
           callback();
-        }],
+        }]
       }, done);
     });
 
@@ -268,7 +267,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               result[0].publicKey.owner.should.equal(queryId);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -298,10 +297,10 @@ describe('bedrock-key API: getPublicKeys', () => {
         },
         insert: ['setup', function(callback) {
           async.series([
-            callback => {brKey.addPublicKey(
-              firstActor, samplePublicKey1, privateKey1, callback)},
-            callback => {brKey.addPublicKey(
-              firstActor, samplePublicKey2, privateKey2, callback)}
+            callback => brKey.addPublicKey(
+              firstActor, samplePublicKey1, privateKey1, callback),
+            callback => brKey.addPublicKey(
+              firstActor, samplePublicKey2, privateKey2, callback)
           ], callback);
         }],
         test: ['insert', callback => {
@@ -322,7 +321,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               privateKey2.privateKeyPem);
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -375,7 +374,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               should.not.exist(result[0].publicKey.privateKey);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -420,7 +419,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               should.not.exist(result[0].publicKey.privateKey);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 
@@ -458,7 +457,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               result.should.have.length(0);
               callback();
             });
-        }],
+        }]
       }, done);
     });
 

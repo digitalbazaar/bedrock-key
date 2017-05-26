@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
 /* globals it, describe, should, before, beforeEach */
 /* jshint node: true */
@@ -42,7 +42,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback, results) {
+        test: ['insert', function(callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -52,7 +52,7 @@ describe('bedrock-key API: addPublicKey', () => {
               samplePublicKey.publicKeyPem);
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -68,7 +68,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, privateKey, callback);
         },
-        test: ['insert', function(callback, results) {
+        test: ['insert', function(callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -80,7 +80,7 @@ describe('bedrock-key API: addPublicKey', () => {
               privateKey.privateKeyPem);
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -125,7 +125,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback, results) {
+        test: ['insert', function(callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -137,7 +137,7 @@ describe('bedrock-key API: addPublicKey', () => {
             result[0].publicKey.type.should.equal('CryptographicKey');
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -155,7 +155,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback, results) {
+        test: ['insert', function(callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -168,7 +168,7 @@ describe('bedrock-key API: addPublicKey', () => {
             result[0].publicKey.id.should.equal(samplePublicKey.id);
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -194,7 +194,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback, results) {
+        test: ['insert', function(callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -204,7 +204,7 @@ describe('bedrock-key API: addPublicKey', () => {
               samplePublicKey.publicKeyPem);
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -218,7 +218,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback, results) {
+        test: ['insert', function(callback) {
           database.collections.publicKey.find({
             'publicKey.owner': samplePublicKey.owner
           }).toArray(function(err, result) {
@@ -228,7 +228,7 @@ describe('bedrock-key API: addPublicKey', () => {
               samplePublicKey.publicKeyPem);
             callback();
           });
-        }],
+        }]
       }, done);
     });
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
 /* globals it, describe, should, before, beforeEach */
 /* jshint node: true */
@@ -71,7 +71,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           final[0].owner.should.equal(actor.id);
           orig[0].sysStatus.should.equal(final[0].sysStatus);
           callback();
-        }],
+        }]
       }, done);
     });
 
@@ -83,7 +83,7 @@ describe('bedrock-key API: updatePublicKey', () => {
       newPublicKey.label = 'Key 00';
       newPublicKey.id = 'https://bedrock.dev:18443/keys/1';
 
-      brKey.updatePublicKey(actor, newPublicKey, (err, result) => {
+      brKey.updatePublicKey(actor, newPublicKey, err => {
         should.exist(err);
         err.name.should.equal('NotFound');
         err.message.should.equal(
@@ -119,7 +119,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           newPublicKey.id = originalPublicKey.id;
           // Unsanitized publicKey owner should be deleted before API call
           delete newPublicKey.owner;
-          brKey.updatePublicKey(secondActor, newPublicKey, (err, result) => {
+          brKey.updatePublicKey(secondActor, newPublicKey, err => {
             should.exist(err);
             err.name.should.equal('PermissionDenied');
             callback();
@@ -135,7 +135,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           final[0].label.should.equal(originalPublicKey.label);
           final[0].owner.should.equal(actor.id);
           callback();
-        }],
+        }]
       }, done);
     });
 
@@ -191,7 +191,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           final[0].owner.should.equal(actor.id);
           orig[0].sysStatus.should.equal(final[0].sysStatus);
           callback();
-        }],
+        }]
       }, done);
     });
 
@@ -233,12 +233,12 @@ describe('bedrock-key API: updatePublicKey', () => {
         }],
         test: ['insert', callback => {
           newPublicKey.id = originalPublicKey.id;
-          brKey.updatePublicKey(actor, newPublicKey, (err, result) => {
+          brKey.updatePublicKey(actor, newPublicKey, err => {
             should.exist(err);
             err.name.should.equal('PermissionDenied');
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -273,12 +273,12 @@ describe('bedrock-key API: updatePublicKey', () => {
         }],
         test: ['insert', callback => {
           newPublicKey.id = originalPublicKey.id;
-          brKey.updatePublicKey(actor, newPublicKey, (err, result) => {
+          brKey.updatePublicKey(actor, newPublicKey, err => {
             should.exist(err);
             err.name.should.equal('PermissionDenied');
             callback();
           });
-        }],
+        }]
       }, done);
     });
 

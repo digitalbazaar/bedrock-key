@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
 /* globals it, describe, should, before, beforeEach */
 /* jshint node: true */
@@ -60,13 +60,13 @@ describe('bedrock-key API: revokePublicKey', () => {
           orig.sysStatus.should.equal('active');
           final.sysStatus.should.equal('disabled');
           orig.publicKeyPem.should.equal(
-           originalPublicKey.publicKeyPem);
+            originalPublicKey.publicKeyPem);
           final.publicKeyPem.should.equal(
-           originalPublicKey.publicKeyPem);
+            originalPublicKey.publicKeyPem);
           should.not.exist(orig.revoked);
           should.exist(final.revoked);
           callback();
-        }],
+        }]
       }, done);
     });
 
@@ -103,9 +103,9 @@ describe('bedrock-key API: revokePublicKey', () => {
           orig[0].sysStatus.should.equal('active');
           final[0].sysStatus.should.equal('disabled');
           orig[0].publicKeyPem.should.equal(
-           originalPublicKey.publicKeyPem);
+            originalPublicKey.publicKeyPem);
           final[0].publicKeyPem.should.equal(
-           originalPublicKey.publicKeyPem);
+            originalPublicKey.publicKeyPem);
           should.not.exist(orig[0].revoked);
           should.exist(final[0].revoked);
           should.not.exist(orig[2].sysStatus);
@@ -117,7 +117,7 @@ describe('bedrock-key API: revokePublicKey', () => {
           should.not.exist(orig[2].revoked);
           should.exist(final[2].revoked);
           callback();
-        }],
+        }]
       }, done);
     });
 
@@ -138,12 +138,12 @@ describe('bedrock-key API: revokePublicKey', () => {
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
         test: ['revoke', callback => {
-          brKey.revokePublicKey(actor, revPublicKey, (err, result) => {
+          brKey.revokePublicKey(actor, revPublicKey, err => {
             should.exist(err);
             err.name.should.equal('NotFound');
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -156,7 +156,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       revPublicKey = 'https://bedrock.dev:18443/keys/foo';
-      brKey.revokePublicKey(actor, revPublicKey, (err, result) => {
+      brKey.revokePublicKey(actor, revPublicKey, err => {
         should.exist(err);
         err.name.should.equal('NotFound');
       });
@@ -208,9 +208,9 @@ describe('bedrock-key API: revokePublicKey', () => {
           orig[0].sysStatus.should.equal('active');
           final[0].sysStatus.should.equal('disabled');
           orig[0].publicKeyPem.should.equal(
-           originalPublicKey.publicKeyPem);
+            originalPublicKey.publicKeyPem);
           final[0].publicKeyPem.should.equal(
-           originalPublicKey.publicKeyPem);
+            originalPublicKey.publicKeyPem);
           should.not.exist(orig[0].revoked);
           should.exist(final[0].revoked);
           should.not.exist(orig[2].sysStatus);
@@ -222,7 +222,7 @@ describe('bedrock-key API: revokePublicKey', () => {
           should.not.exist(orig[2].revoked);
           should.exist(final[2].revoked);
           callback();
-        }],
+        }]
       }, done);
     });
 
@@ -259,9 +259,9 @@ describe('bedrock-key API: revokePublicKey', () => {
           orig[0].sysStatus.should.equal('active');
           final[0].sysStatus.should.equal('disabled');
           orig[0].publicKeyPem.should.equal(
-           originalPublicKey.publicKeyPem);
+            originalPublicKey.publicKeyPem);
           final[0].publicKeyPem.should.equal(
-           originalPublicKey.publicKeyPem);
+            originalPublicKey.publicKeyPem);
           should.not.exist(orig[0].revoked);
           should.exist(final[0].revoked);
           should.not.exist(orig[2].sysStatus);
@@ -273,7 +273,7 @@ describe('bedrock-key API: revokePublicKey', () => {
           should.not.exist(orig[2].revoked);
           should.exist(final[2].revoked);
           callback();
-        }],
+        }]
       }, done);
     });
 
@@ -313,12 +313,12 @@ describe('bedrock-key API: revokePublicKey', () => {
         }],
         test: ['insert', callback => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, (err, result) => {
+          brKey.revokePublicKey(actor, revPublicKey, err => {
             should.exist(err);
             err.name.should.equal('PermissionDenied');
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
@@ -353,12 +353,12 @@ describe('bedrock-key API: revokePublicKey', () => {
         }],
         test: ['insert', callback => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, (err, result) => {
+          brKey.revokePublicKey(actor, revPublicKey, err => {
             should.exist(err);
             err.name.should.equal('PermissionDenied');
             callback();
           });
-        }],
+        }]
       }, done);
     });
 
