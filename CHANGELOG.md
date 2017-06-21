@@ -1,5 +1,19 @@
 # bedrock-key ChangeLog
 
+## 4.0.0 - 2017-06-20
+
+### Changed
+- **Breaking** Removed `generatePublicKeyId` API.
+- Update `bedrock` dependency to v1.4.x.
+- Remove `bedrock-server` dependency.
+- Remove `ursa` dependency.
+
+### Fixed
+- Fix permissions issues in `getPublicKey` and `revokePublicKey` APIs.
+
+### Added
+- Add 46 additional tests.
+
 ## 3.1.4 - 2016-09-22
 
 ### Changed
