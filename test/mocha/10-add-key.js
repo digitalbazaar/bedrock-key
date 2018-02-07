@@ -9,7 +9,6 @@ const mockData = require('./mock.data');
 const brIdentity = require('bedrock-identity');
 const database = require('bedrock-mongodb');
 const helpers = require('./helpers');
-const util = require('util');
 
 describe('bedrock-key API: addPublicKey', () => {
   before(done => {
@@ -129,8 +128,7 @@ describe('bedrock-key API: addPublicKey', () => {
             should.not.exist(err);
             should.exist(result);
             result[0].publicKey.sysStatus.should.equal('active');
-            result[0].publicKey.label.should.equal(
-              util.format('Key %d', samplePublicKey.id));
+            result[0].publicKey.label.startsWith('Key').should.be.true;
             result[0].publicKey.type.should.equal('CryptographicKey');
             callback();
           });

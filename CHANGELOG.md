@@ -1,5 +1,16 @@
 # bedrock-key ChangeLog
 
+# 4.x
+
+### Changed
+- Use ES6 Syntax.
+- Update bedrock-mongodb dependency.
+- Upgrade to Async@2.
+
+### Added
+- Optional caching of public keys. The current caching implementation is
+  aimed at accelerating http-signature authentication `bedrock-passport`.
+
 ## 4.0.0 - 2017-06-20
 
 ### Changed

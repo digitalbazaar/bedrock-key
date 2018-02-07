@@ -329,4 +329,52 @@ describe('bedrock-key API: getPublicKey', () => {
     });
 
   }); // describe: no authentication
+
+  describe('No actor specified.', () => {
+    it('should return public, but no private key', done => {
+      const samplePublicKey = {};
+      let queryPublicKey;
+
+      // create second identity to insert public key
+      const mockIdentity = mockData.identities.regularUser;
+      const secondActor = mockIdentity.identity;
+      const privateKey = {};
+
+      samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
+      samplePublicKey.owner = secondActor.id;
+      privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
+
+      async.auto({
+        insert: function(callback) {
+          brKey.addPublicKey(null, samplePublicKey, privateKey, callback);
+        },
+        test: ['insert', (results, callback) => {
+          queryPublicKey = {id: samplePublicKey.id};
+          brKey.getPublicKey(
+            queryPublicKey, (err, result, meta, privateResult) => {
+              assertNoError(err);
+              should.exist(result);
+              result.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
+              should.not.exist(result.privateKey);
+              should.not.exist(privateResult);
+              callback();
+            });
+        }],
+        // second test should pass with/without cache enabled
+        test2: ['test', (results, callback) => {
+          queryPublicKey = {id: samplePublicKey.id};
+          brKey.getPublicKey(
+            queryPublicKey, (err, result, meta, privateResult) => {
+              assertNoError(err);
+              should.exist(result);
+              result.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
+              should.not.exist(result.privateKey);
+              should.not.exist(privateResult);
+              callback();
+            });
+        }]
+      }, done);
+    });
+
+  }); // describe: no actor
 }); // describe getPublicKey
