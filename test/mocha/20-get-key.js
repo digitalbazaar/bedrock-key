@@ -41,7 +41,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
             queryPublicKey, actor, (err, result) => {
@@ -67,7 +67,7 @@ describe('bedrock-key API: getPublicKey', () => {
           samplePublicKey.owner = mockIdentity2.identity.id;
           brKey.addPublicKey(null, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
             queryPublicKey, actor, (err, result) => {
@@ -92,7 +92,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey.owner = samplePublicKey.owner;
           queryPublicKey.publicKeyPem = samplePublicKey.publicKeyPem;
           brKey.getPublicKey(
@@ -117,7 +117,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey.id = 'https://not-found';
           brKey.getPublicKey(queryPublicKey, actor, function(err, result) {
             should.exist(err);
@@ -142,7 +142,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, privateKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
             queryPublicKey, actor, (err, result, meta, privateResult) => {
@@ -182,7 +182,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
             queryPublicKey, actor, (err, result) => {
@@ -207,7 +207,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
             queryPublicKey, actor, (err, result) => {
@@ -248,7 +248,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(null, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
             queryPublicKey, actor, (err, result) => {
@@ -279,7 +279,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(null, samplePublicKey, privateKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
             queryPublicKey, actor, (err, result, meta, privateResult) => {
@@ -316,7 +316,7 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(null, samplePublicKey, privateKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
             queryPublicKey, actor, (err, result, meta, privateResult) => {

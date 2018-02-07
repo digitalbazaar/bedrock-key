@@ -41,7 +41,7 @@ describe('bedrock-key API: getPublicKeys', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryId = actor.id;
           brKey.getPublicKeys(
             queryId, actor, (err, result) => {
@@ -68,7 +68,7 @@ describe('bedrock-key API: getPublicKeys', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           // create id that will not be found
           queryId = actor.id + 1;
           brKey.getPublicKeys(
@@ -96,7 +96,7 @@ describe('bedrock-key API: getPublicKeys', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           brKey.getPublicKeys(
             queryId, actor, queryOptions, (err, result) => {
               should.not.exist(err);
@@ -124,7 +124,7 @@ describe('bedrock-key API: getPublicKeys', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, privateKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           brKey.getPublicKeys(
             queryId, actor, queryOptions, (err, result) => {
               should.not.exist(err);
@@ -158,7 +158,7 @@ describe('bedrock-key API: getPublicKeys', () => {
             callback => brKey.addPublicKey(actor, samplePublicKey2, callback)
           ], callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryId = actor.id;
           brKey.getPublicKeys(
             queryId, actor, (err, result) => {
@@ -198,22 +198,22 @@ describe('bedrock-key API: getPublicKeys', () => {
             callback();
           });
         },
-        insert: ['setup', function(callback) {
+        insert: ['setup', function(results, callback) {
           async.series([
             callback => brKey.addPublicKey(actor, samplePublicKey, callback),
             callback => brKey.addPublicKey(
               secondActor, samplePublicKey2, callback)
           ], callback);
         }],
-        get1: ['insert', callback => {
+        get1: ['insert', (results, callback) => {
           queryId = actor.id;
           brKey.getPublicKeys(queryId, actor, callback);
         }],
-        get2: ['insert', callback => {
+        get2: ['insert', (results, callback) => {
           queryId2 = secondActor.id;
           brKey.getPublicKeys(queryId2, actor, callback);
         }],
-        test: ['get2', 'get1', (callback, results) => {
+        test: ['get2', 'get1', (results, callback) => {
           tr1 = results.get1;
           tr2 = results.get2;
           should.exist(tr1);
@@ -255,7 +255,7 @@ describe('bedrock-key API: getPublicKeys', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryId = actor.id;
           brKey.getPublicKeys(
             queryId, actor, (err, result) => {
@@ -295,7 +295,7 @@ describe('bedrock-key API: getPublicKeys', () => {
             callback();
           });
         },
-        insert: ['setup', function(callback) {
+        insert: ['setup', function(results, callback) {
           async.series([
             callback => brKey.addPublicKey(
               firstActor, samplePublicKey1, privateKey1, callback),
@@ -303,7 +303,7 @@ describe('bedrock-key API: getPublicKeys', () => {
               firstActor, samplePublicKey2, privateKey2, callback)
           ], callback);
         }],
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryId = firstActor.id;
           brKey.getPublicKeys(queryId, actor, (err, result) => {
             should.not.exist(err);
@@ -357,11 +357,11 @@ describe('bedrock-key API: getPublicKeys', () => {
             callback();
           });
         },
-        insert: ['setup', function(callback) {
+        insert: ['setup', function(results, callback) {
           brKey.addPublicKey(
             secondActor, samplePublicKey, privateKey, callback);
         }],
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryId = samplePublicKey.owner;
           brKey.getPublicKeys(
             queryId, actor, (err, result) => {
@@ -402,11 +402,11 @@ describe('bedrock-key API: getPublicKeys', () => {
             callback();
           });
         },
-        insert: ['setup', function(callback) {
+        insert: ['setup', function(results, callback) {
           brKey.addPublicKey(
             secondActor, samplePublicKey, privateKey, callback);
         }],
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryId = samplePublicKey.owner;
           brKey.getPublicKeys(
             queryId, (err, result) => {
@@ -444,11 +444,11 @@ describe('bedrock-key API: getPublicKeys', () => {
             callback();
           });
         },
-        insert: ['setup', function(callback) {
+        insert: ['setup', function(results, callback) {
           brKey.addPublicKey(
             secondActor, samplePublicKey, callback);
         }],
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           queryId = samplePublicKey.owner;
           brKey.getPublicKeys(
             queryId, actor, queryOptions, (err, result) => {

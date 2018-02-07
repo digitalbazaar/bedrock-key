@@ -42,7 +42,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback) {
+        test: ['insert', function(results, callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -68,7 +68,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, privateKey, callback);
         },
-        test: ['insert', function(callback) {
+        test: ['insert', function(results, callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -125,7 +125,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback) {
+        test: ['insert', function(results, callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -155,7 +155,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback) {
+        test: ['insert', function(results, callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -194,7 +194,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback) {
+        test: ['insert', function(results, callback) {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray(function(err, result) {
@@ -218,7 +218,7 @@ describe('bedrock-key API: addPublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
-        test: ['insert', function(callback) {
+        test: ['insert', function(results, callback) {
           database.collections.publicKey.find({
             'publicKey.owner': samplePublicKey.owner
           }).toArray(function(err, result) {

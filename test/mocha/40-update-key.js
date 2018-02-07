@@ -44,21 +44,21 @@ describe('bedrock-key API: updatePublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, originalPublicKey, callback);
         },
-        readOrig: ['insert', callback => {
+        readOrig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        update: ['readOrig', (callback, results) => {
+        update: ['readOrig', (results, callback) => {
           newPublicKey = brUtil.clone(results.readOrig[0]);
           newPublicKey.label = 'Key 01';
           newPublicKey.publicKeyPem = 'bogusPublicKey';
           newPublicKey.sysStatus = 'bogusStatus';
           brKey.updatePublicKey(actor, newPublicKey, callback);
         }],
-        readUpdate: ['update', callback => {
+        readUpdate: ['update', (results, callback) => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        test: ['readUpdate', (callback, results) => {
+        test: ['readUpdate', (results, callback) => {
           orig = results.readOrig;
           final = results.readUpdate;
           orig[0].label.should.equal(originalPublicKey.label);
@@ -112,10 +112,10 @@ describe('bedrock-key API: updatePublicKey', () => {
             callback(err, result);
           });
         },
-        insert: ['setup', function(callback) {
+        insert: ['setup', function(results, callback) {
           brKey.addPublicKey(actor, originalPublicKey, callback);
         }],
-        update: ['insert', callback => {
+        update: ['insert', (results, callback) => {
           newPublicKey.id = originalPublicKey.id;
           // Unsanitized publicKey owner should be deleted before API call
           delete newPublicKey.owner;
@@ -125,11 +125,11 @@ describe('bedrock-key API: updatePublicKey', () => {
             callback();
           });
         }],
-        readUpdate: ['update', callback => {
+        readUpdate: ['update', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        test: ['readUpdate', (callback, results) => {
+        test: ['readUpdate', (results, callback) => {
           final = results.readUpdate;
           final[0].publicKeyPem.should.equal(originalPublicKey.publicKeyPem);
           final[0].label.should.equal(originalPublicKey.label);
@@ -164,21 +164,21 @@ describe('bedrock-key API: updatePublicKey', () => {
         insert: function(callback) {
           brKey.addPublicKey(actor, originalPublicKey, callback);
         },
-        readOrig: ['insert', callback => {
+        readOrig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        update: ['readOrig', (callback, results) => {
+        update: ['readOrig', (results, callback) => {
           newPublicKey = brUtil.clone(results.readOrig[0]);
           newPublicKey.label = 'Key 01';
           newPublicKey.publicKeyPem = 'bogusPublicKey';
           newPublicKey.sysStatus = 'bogusStatus';
           brKey.updatePublicKey(actor, newPublicKey, callback);
         }],
-        readUpdate: ['update', callback => {
+        readUpdate: ['update', (results, callback) => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        test: ['readUpdate', (callback, results) => {
+        test: ['readUpdate', (results, callback) => {
           orig = results.readOrig;
           final = results.readUpdate;
           orig[0].label.should.equal(originalPublicKey.label);
@@ -227,11 +227,11 @@ describe('bedrock-key API: updatePublicKey', () => {
             callback(err, result);
           });
         },
-        insert: ['setup', function(callback) {
+        insert: ['setup', function(results, callback) {
           originalPublicKey.owner = secondActor.id;
           brKey.addPublicKey(secondActor, originalPublicKey, callback);
         }],
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           newPublicKey.id = originalPublicKey.id;
           brKey.updatePublicKey(actor, newPublicKey, err => {
             should.exist(err);
@@ -267,11 +267,11 @@ describe('bedrock-key API: updatePublicKey', () => {
             callback(err, result);
           });
         },
-        insert: ['setup', function(callback) {
+        insert: ['setup', function(results, callback) {
           originalPublicKey.owner = secondActor.id;
           brKey.addPublicKey(secondActor, originalPublicKey, callback);
         }],
-        test: ['insert', callback => {
+        test: ['insert', (results, callback) => {
           newPublicKey.id = originalPublicKey.id;
           brKey.updatePublicKey(actor, newPublicKey, err => {
             should.exist(err);
