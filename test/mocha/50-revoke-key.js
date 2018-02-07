@@ -1,16 +1,13 @@
 /*
  * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
-/* globals it, describe, should, before, beforeEach */
-/* jshint node: true */
-
 'use strict';
 
-var async = require('async');
-var brKey = require('bedrock-key');
-var mockData = require('./mock.data');
-var brIdentity = require('bedrock-identity');
-var helpers = require('./helpers');
+const async = require('async');
+const brKey = require('bedrock-key');
+const mockData = require('./mock.data');
+const brIdentity = require('bedrock-identity');
+const helpers = require('./helpers');
 
 describe('bedrock-key API: revokePublicKey', () => {
   before(done => {
@@ -21,8 +18,8 @@ describe('bedrock-key API: revokePublicKey', () => {
   });
 
   describe('authenticated as regularUser', () => {
-    var mockIdentity = mockData.identities.regularUser;
-    var actor;
+    const mockIdentity = mockData.identities.regularUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -31,9 +28,11 @@ describe('bedrock-key API: revokePublicKey', () => {
     });
 
     it('should revoke a public key', done => {
-      var originalPublicKey = {};
-      var queryPublicKey, revPublicKey;
-      var orig, final;
+      const originalPublicKey = {};
+      let queryPublicKey;
+      let revPublicKey;
+      let orig;
+      let final;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
@@ -71,11 +70,12 @@ describe('bedrock-key API: revokePublicKey', () => {
     });
 
     it('should revoke public and private key', done => {
-      var originalPublicKey = {};
-      var queryPublicKey = {};
-      var revPublicKey;
-      var orig, final;
-      var privateKey = {};
+      const originalPublicKey = {};
+      const queryPublicKey = {};
+      let revPublicKey;
+      let orig;
+      let final;
+      const privateKey = {};
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
@@ -122,8 +122,8 @@ describe('bedrock-key API: revokePublicKey', () => {
     });
 
     it('should return an error if public key already revoked', done => {
-      var originalPublicKey = {};
-      var revPublicKey;
+      const originalPublicKey = {};
+      let revPublicKey;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
@@ -148,14 +148,13 @@ describe('bedrock-key API: revokePublicKey', () => {
     });
 
     it('should return an error if public key DNE', done => {
-      var originalPublicKey = {};
-      var revPublicKey;
+      const originalPublicKey = {};
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
       originalPublicKey.label = 'Key 00';
 
-      revPublicKey = 'https://bedrock.dev:18443/keys/foo';
+      const revPublicKey = 'https://bedrock.dev:18443/keys/foo';
       brKey.revokePublicKey(actor, revPublicKey, err => {
         should.exist(err);
         err.name.should.equal('NotFound');
@@ -166,8 +165,8 @@ describe('bedrock-key API: revokePublicKey', () => {
   }); // describe regularUser
 
   describe('authenticated as adminUser', () => {
-    var mockIdentity = mockData.identities.adminUser;
-    var actor;
+    const mockIdentity = mockData.identities.adminUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -176,11 +175,12 @@ describe('bedrock-key API: revokePublicKey', () => {
     });
 
     it('should revoke public and private key', done => {
-      var originalPublicKey = {};
-      var queryPublicKey = {};
-      var revPublicKey;
-      var orig, final;
-      var privateKey = {};
+      const originalPublicKey = {};
+      const queryPublicKey = {};
+      let revPublicKey;
+      let orig;
+      let final;
+      const privateKey = {};
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
@@ -227,11 +227,12 @@ describe('bedrock-key API: revokePublicKey', () => {
     });
 
     it('should revoke public and private key for other user', done => {
-      var originalPublicKey = {};
-      var queryPublicKey = {};
-      var revPublicKey;
-      var orig, final;
-      var privateKey = {};
+      const originalPublicKey = {};
+      const queryPublicKey = {};
+      let revPublicKey;
+      let orig;
+      let final;
+      const privateKey = {};
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id + 1;
@@ -280,8 +281,8 @@ describe('bedrock-key API: revokePublicKey', () => {
   }); // describe: adminUser
 
   describe('authenticated as noPermissionUser', () => {
-    var mockIdentity = mockData.identities.noPermissionUser;
-    var actor;
+    const mockIdentity = mockData.identities.noPermissionUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -290,12 +291,12 @@ describe('bedrock-key API: revokePublicKey', () => {
     });
 
     it('should return an error if actor lacks permission', done => {
-      var originalPublicKey = {};
-      var revPublicKey;
+      const originalPublicKey = {};
+      let revPublicKey;
 
       // create second identity to insert public key
-      var mockIdentity2 = mockData.identities.regularUser;
-      var secondActor;
+      const mockIdentity2 = mockData.identities.regularUser;
+      let secondActor;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.label = 'Key 00';
@@ -326,16 +327,16 @@ describe('bedrock-key API: revokePublicKey', () => {
 
   describe('User with no authentication', () => {
 
-    var actor = {};
+    const actor = {};
 
     // null actor will revoke; Undefined actor will cause a different error.
     it('should return error when not authenticated', done => {
-      var originalPublicKey = {};
-      var revPublicKey;
+      const originalPublicKey = {};
+      let revPublicKey;
 
       // create second identity to insert public key
-      var mockIdentity2 = mockData.identities.regularUser;
-      var secondActor;
+      const mockIdentity2 = mockData.identities.regularUser;
+      let secondActor;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.label = 'Key 00';

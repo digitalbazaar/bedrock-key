@@ -1,18 +1,15 @@
 /*
  * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
-/* globals it, describe, should, before, beforeEach */
-/* jshint node: true */
-
 'use strict';
 
-var async = require('async');
-var brKey = require('bedrock-key');
-var mockData = require('./mock.data');
-var brIdentity = require('bedrock-identity');
-var database = require('bedrock-mongodb');
-var helpers = require('./helpers');
-var util = require('util');
+const async = require('async');
+const brKey = require('bedrock-key');
+const mockData = require('./mock.data');
+const brIdentity = require('bedrock-identity');
+const database = require('bedrock-mongodb');
+const helpers = require('./helpers');
+const util = require('util');
 
 describe('bedrock-key API: addPublicKey', () => {
   before(done => {
@@ -23,8 +20,8 @@ describe('bedrock-key API: addPublicKey', () => {
   });
 
   describe('authenticated as regularUser', () => {
-    var mockIdentity = mockData.identities.regularUser;
-    var actor;
+    const mockIdentity = mockData.identities.regularUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -33,7 +30,7 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should add a valid public key with no private key', done => {
-      var samplePublicKey = {};
+      const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -57,8 +54,8 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should add a valid public key with matching private key', done => {
-      var samplePublicKey = {};
-      var privateKey = {};
+      const samplePublicKey = {};
+      const privateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -85,8 +82,8 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should return error if adding public key w/ bad private key', done => {
-      var samplePublicKey = {};
-      var PrivateKey = {};
+      const samplePublicKey = {};
+      const PrivateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.badKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -101,7 +98,7 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should return error if owner id does not match', done => {
-      var samplePublicKey = {};
+      const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id + 1;
@@ -116,7 +113,7 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should add default publicKey fields: status, label, type', done => {
-      var samplePublicKey = {};
+      const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -142,7 +139,7 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should add non-default status, label, type, and id', done => {
-      var samplePublicKey = {};
+      const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -175,8 +172,8 @@ describe('bedrock-key API: addPublicKey', () => {
   }); // describe: regularUser
 
   describe('authenticated as adminUser', () => {
-    var mockIdentity = mockData.identities.adminUser;
-    var actor;
+    const mockIdentity = mockData.identities.adminUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -185,7 +182,7 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should add a valid public key with no private key', done => {
-      var samplePublicKey = {};
+      const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -209,7 +206,7 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should add public key for another user', done => {
-      var samplePublicKey = {};
+      const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id + 1;
@@ -235,8 +232,8 @@ describe('bedrock-key API: addPublicKey', () => {
   }); // describe: adminUser
 
   describe('authenticated as noPermissionUser', () => {
-    var mockIdentity = mockData.identities.noPermissionUser;
-    var actor;
+    const mockIdentity = mockData.identities.noPermissionUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -245,7 +242,7 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should return error when adding public key w/o permissions', done => {
-      var samplePublicKey = {};
+      const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -263,10 +260,10 @@ describe('bedrock-key API: addPublicKey', () => {
 
   describe('user with no authentication', () => {
 
-    var actor = {};
+    const actor = {};
 
     it('should return error when not authenticated', done => {
-      var samplePublicKey = {};
+      const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = 'owner';

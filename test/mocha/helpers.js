@@ -4,16 +4,16 @@
 /* jshint node: true */
 'use strict';
 
-var async = require('async');
-var brIdentity = require('bedrock-identity');
-var database = require('bedrock-mongodb');
-var uuid = require('uuid').v4;
+const async = require('async');
+const brIdentity = require('bedrock-identity');
+const database = require('bedrock-mongodb');
+const uuid = require('uuid').v4;
 
-var api = {};
+const api = {};
 module.exports = api;
 
 api.createIdentity = function(userName) {
-  var newIdentity = {
+  const newIdentity = {
     id: 'did:' + uuid(),
     type: 'Identity',
     sysSlug: userName,
@@ -30,7 +30,7 @@ api.createIdentity = function(userName) {
 };
 
 api.removeCollection = function(collection, callback) {
-  var collectionNames = [collection];
+  const collectionNames = [collection];
   database.openCollections(collectionNames, () => {
     async.each(collectionNames, function(collectionName, callback) {
       database.collections[collectionName].remove({}, callback);
@@ -41,7 +41,7 @@ api.removeCollection = function(collection, callback) {
 };
 
 api.removeCollections = function(callback) {
-  var collectionNames = ['identity', 'eventLog', 'publicKey'];
+  const collectionNames = ['identity', 'eventLog', 'publicKey'];
   database.openCollections(collectionNames, () => {
     async.each(collectionNames, (collectionName, callback) => {
       database.collections[collectionName].remove({}, callback);

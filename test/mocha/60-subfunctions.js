@@ -1,26 +1,21 @@
 /*
  * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
-/* globals it, describe, should */
-/* jshint node: true */
-
 'use strict';
 
-var brKey = require('bedrock-key');
-var mockData = require('./mock.data');
+const brKey = require('bedrock-key');
+const mockData = require('./mock.data');
 
 describe('bedrock-key API sub-functions', () => {
   describe('public key ids', () => {
 
     // Tests createPublicKeyId
     it('should create a Public Key ID given a short key name', done => {
-      // var id = uuid();
-      var id = 'foo';
-      var key;
-      var keyCompare;
+      // const id = uuid();
+      const id = 'foo';
 
-      keyCompare = 'urn:key:/keys/foo';
-      key = brKey.createPublicKeyId(id);
+      const keyCompare = 'urn:key:/keys/foo';
+      const key = brKey.createPublicKeyId(id);
       should.exist(key);
       key.should.equal(keyCompare);
       done();

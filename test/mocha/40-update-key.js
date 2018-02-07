@@ -1,17 +1,14 @@
 /*
  * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
-/* globals it, describe, should, before, beforeEach */
-/* jshint node: true */
-
 'use strict';
 
-var async = require('async');
-var brKey = require('bedrock-key');
-var mockData = require('./mock.data');
-var brIdentity = require('bedrock-identity');
-var helpers = require('./helpers');
-var brUtil = require('bedrock').util;
+const async = require('async');
+const brKey = require('bedrock-key');
+const mockData = require('./mock.data');
+const brIdentity = require('bedrock-identity');
+const helpers = require('./helpers');
+const brUtil = require('bedrock').util;
 
 describe('bedrock-key API: updatePublicKey', () => {
   before(done => {
@@ -22,8 +19,8 @@ describe('bedrock-key API: updatePublicKey', () => {
   });
 
   describe('authenticated as regularUser', () => {
-    var mockIdentity = mockData.identities.regularUser;
-    var actor;
+    const mockIdentity = mockData.identities.regularUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -32,9 +29,11 @@ describe('bedrock-key API: updatePublicKey', () => {
     });
 
     it('should update a key, excluding restricted fields', done => {
-      var originalPublicKey = {};
-      var newPublicKey = {};
-      var queryPublicKey, orig, final;
+      const originalPublicKey = {};
+      let newPublicKey = {};
+      let queryPublicKey;
+      let orig;
+      let final;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
@@ -76,7 +75,7 @@ describe('bedrock-key API: updatePublicKey', () => {
     });
 
     it('should return error if key is not found', done => {
-      var newPublicKey = {};
+      const newPublicKey = {};
 
       newPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       newPublicKey.owner = actor.id;
@@ -93,10 +92,12 @@ describe('bedrock-key API: updatePublicKey', () => {
     });
 
     it('should not update key if not key owner', done => {
-      var originalPublicKey = {};
-      var newPublicKey = {};
-      var secondActor, queryPublicKey, final;
-      var mockIdentity2 = mockData.identities.regularUser2;
+      const originalPublicKey = {};
+      const newPublicKey = {};
+      let secondActor;
+      let queryPublicKey;
+      let final;
+      const mockIdentity2 = mockData.identities.regularUser2;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
@@ -142,8 +143,8 @@ describe('bedrock-key API: updatePublicKey', () => {
   }); // describe regularUser
 
   describe('authenticated as adminUser', () => {
-    var mockIdentity = mockData.identities.adminUser;
-    var actor;
+    const mockIdentity = mockData.identities.adminUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -152,9 +153,11 @@ describe('bedrock-key API: updatePublicKey', () => {
     });
 
     it('should update a key, excluding restricted fields', done => {
-      var originalPublicKey = {};
-      var newPublicKey = {};
-      var queryPublicKey, orig, final;
+      const originalPublicKey = {};
+      let newPublicKey = {};
+      let queryPublicKey;
+      let orig;
+      let final;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
@@ -198,8 +201,8 @@ describe('bedrock-key API: updatePublicKey', () => {
   }); // describe: adminUser
 
   describe('authenticated as noPermissionUser', () => {
-    var mockIdentity = mockData.identities.noPermissionUser;
-    var actor;
+    const mockIdentity = mockData.identities.noPermissionUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -208,10 +211,10 @@ describe('bedrock-key API: updatePublicKey', () => {
     });
 
     it('should return an error if actor lacks permission', done => {
-      var originalPublicKey = {};
-      var newPublicKey = {};
-      var secondActor;
-      var mockIdentity2 = mockData.identities.regularUser;
+      const originalPublicKey = {};
+      const newPublicKey = {};
+      let secondActor;
+      const mockIdentity2 = mockData.identities.regularUser;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.label = 'Key 00';
@@ -245,13 +248,13 @@ describe('bedrock-key API: updatePublicKey', () => {
   }); // describe: noPermissionUser
 
   describe('User with no authentication', () => {
-    var actor = {};
+    const actor = {};
 
     it('should return error when not authenticated', done => {
-      var originalPublicKey = {};
-      var newPublicKey = {};
-      var secondActor;
-      var mockIdentity2 = mockData.identities.regularUser;
+      const originalPublicKey = {};
+      const newPublicKey = {};
+      let secondActor;
+      const mockIdentity2 = mockData.identities.regularUser;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.label = 'Key 00';

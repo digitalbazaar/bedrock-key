@@ -1,16 +1,13 @@
 /*
  * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
  */
-/* globals it, describe, should, before, beforeEach */
-/* jshint node: true */
-
 'use strict';
 
-var async = require('async');
-var brKey = require('bedrock-key');
-var mockData = require('./mock.data');
-var brIdentity = require('bedrock-identity');
-var helpers = require('./helpers');
+const async = require('async');
+const brKey = require('bedrock-key');
+const mockData = require('./mock.data');
+const brIdentity = require('bedrock-identity');
+const helpers = require('./helpers');
 
 describe('bedrock-key API: getPublicKeys', () => {
   before(done => {
@@ -21,8 +18,8 @@ describe('bedrock-key API: getPublicKeys', () => {
   });
 
   describe('authenticated as regularUser', () => {
-    var mockIdentity = mockData.identities.regularUser;
-    var actor;
+    const mockIdentity = mockData.identities.regularUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -31,8 +28,8 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return one key for an id, w/ actor, no options', done => {
-      var samplePublicKey = {};
-      var queryId;
+      const samplePublicKey = {};
+      let queryId;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -58,8 +55,8 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return no key for an id with no public keys', done => {
-      var samplePublicKey = {};
-      var queryId;
+      const samplePublicKey = {};
+      let queryId;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -83,14 +80,13 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return no key for an id w/ sign option and no pvt Key', done => {
-      var samplePublicKey = {};
-      var queryId;
-      var queryOptions = {};
+      const samplePublicKey = {};
+      const queryOptions = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
       queryOptions.capability = 'sign';
-      queryId = actor.id;
+      const queryId = actor.id;
 
       async.auto({
         insert: function(callback) {
@@ -109,16 +105,15 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return a key for an id w sign option and privateKey', done => {
-      var samplePublicKey = {};
-      var queryId;
-      var queryOptions = {};
-      var privateKey = {};
+      const samplePublicKey = {};
+      const queryOptions = {};
+      const privateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
       queryOptions.capability = 'sign';
-      queryId = actor.id;
+      const queryId = actor.id;
 
       async.auto({
         insert: function(callback) {
@@ -142,9 +137,9 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return multiple keys for id', done => {
-      var samplePublicKey = {};
-      var samplePublicKey2 = {};
-      var queryId;
+      const samplePublicKey = {};
+      const samplePublicKey2 = {};
+      let queryId;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -178,13 +173,15 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return single key from multiple in database', done => {
-      var samplePublicKey = {};
-      var samplePublicKey2 = {};
-      var queryId, queryId2;
+      const samplePublicKey = {};
+      const samplePublicKey2 = {};
+      let queryId;
+      let queryId2;
       // create second identity to insert public key
-      var mockIdentity2 = mockData.identities.regularUser2;
-      var secondActor;
-      var tr1, tr2;
+      const mockIdentity2 = mockData.identities.regularUser2;
+      let secondActor;
+      let tr1;
+      let tr2;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -234,8 +231,8 @@ describe('bedrock-key API: getPublicKeys', () => {
   }); // describe regularUser
 
   describe('authenticated as adminUser', () => {
-    var mockIdentity = mockData.identities.adminUser;
-    var actor;
+    const mockIdentity = mockData.identities.adminUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -245,8 +242,8 @@ describe('bedrock-key API: getPublicKeys', () => {
 
     // admin gets pubic key it inserted
     it('should return one key for an id w/ actor, no options', done => {
-      var samplePublicKey = {};
-      var queryId;
+      const samplePublicKey = {};
+      let queryId;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
@@ -272,14 +269,14 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return public/pvt keys from other user in database', done => {
-      var samplePublicKey1 = {};
-      var samplePublicKey2 = {};
-      var queryId;
-      var privateKey1 = {};
-      var privateKey2 = {};
+      const samplePublicKey1 = {};
+      const samplePublicKey2 = {};
+      let queryId;
+      const privateKey1 = {};
+      const privateKey2 = {};
       // create second identity to insert public key
-      var mockIdentity1 = mockData.identities.regularUser;
-      var firstActor;
+      const mockIdentity1 = mockData.identities.regularUser;
+      let firstActor;
 
       samplePublicKey1.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey2.publicKeyPem = mockData.goodKeyPair2.publicKeyPem;
@@ -328,8 +325,8 @@ describe('bedrock-key API: getPublicKeys', () => {
   }); // describe: adminUser
 
   describe('authenticated as noPermissionUser', () => {
-    var mockIdentity = mockData.identities.noPermissionUser;
-    var actor;
+    const mockIdentity = mockData.identities.noPermissionUser;
+    let actor;
     before(done => {
       brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
         actor = result;
@@ -338,13 +335,13 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return only a public key for no-permission actor', done => {
-      var samplePublicKey = {};
-      var queryId;
-      var privateKey = {};
+      const samplePublicKey = {};
+      let queryId;
+      const privateKey = {};
 
       // create second identity to insert public key
-      var mockIdentity2 = mockData.identities.regularUser;
-      var secondActor;
+      const mockIdentity2 = mockData.identities.regularUser;
+      let secondActor;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
@@ -383,13 +380,13 @@ describe('bedrock-key API: getPublicKeys', () => {
   describe('User with no authentication', () => {
 
     it('should return only a public key for no actor or options', done => {
-      var samplePublicKey = {};
-      var queryId;
-      var privateKey = {};
+      const samplePublicKey = {};
+      let queryId;
+      const privateKey = {};
 
       // create second identity to insert public key
-      var mockIdentity2 = mockData.identities.regularUser;
-      var secondActor;
+      const mockIdentity2 = mockData.identities.regularUser;
+      let secondActor;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
@@ -424,14 +421,14 @@ describe('bedrock-key API: getPublicKeys', () => {
     });
 
     it('should return no public key for no actor w/ sign option', done => {
-      var samplePublicKey = {};
-      var queryId;
-      var queryOptions = {};
-      var actor = {}; // undefined;
+      const samplePublicKey = {};
+      let queryId;
+      const queryOptions = {};
+      const actor = {}; // undefined;
 
       // create second identity to insert public key
-      var mockIdentity2 = mockData.identities.regularUser;
-      var secondActor;
+      const mockIdentity2 = mockData.identities.regularUser;
+      let secondActor;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       queryOptions.capability = 'sign';

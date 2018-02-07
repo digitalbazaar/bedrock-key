@@ -4,13 +4,13 @@
 
 'use strict';
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 
-var mock = {};
+const mock = {};
 module.exports = mock;
 
-var identities = mock.identities = {};
-var userName;
+const identities = mock.identities = {};
+let userName;
 
 // identity with permission to add public keys
 userName = 'regularUser';
