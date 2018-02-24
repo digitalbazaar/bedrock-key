@@ -1,6 +1,6 @@
 # bedrock-key ChangeLog
 
-# 4.x
+# 4.1.0 - 2018-02-24
 
 ### Changed
 - Use ES6 Syntax.
