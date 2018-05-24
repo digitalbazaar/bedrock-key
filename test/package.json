@@ -27,7 +27,7 @@
     "bedrock-key": "file:..",
     "bedrock-mongodb": "^4.0.0",
     "bedrock-permission": "^2.4.2",
-    "bedrock-redis": "digitalbazaar/bedrock-redis#improved",
+    "bedrock-redis": "^3.2.0",
     "bedrock-test": "^2.0.0",
     "uuid": "^2.0.3"
   }
