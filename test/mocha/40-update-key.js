@@ -28,46 +28,76 @@ describe('bedrock-key API: updatePublicKey', () => {
       });
     });
 
-    it('should update a key, excluding restricted fields', done => {
-      const originalPublicKey = {};
+    it('should update a RSA key, excluding restricted fields', done => {
       let newPublicKey = {};
       let queryPublicKey;
-      let orig;
-      let final;
-
-      originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      originalPublicKey.owner = actor.id;
-      originalPublicKey.label = 'Key 00';
+      const {publicKeyPem} = mockData.goodKeyPair;
+      const {id: owner} = actor;
+      const label = 'Key 00';
+      const originalPublicKey = {label, publicKeyPem, owner};
 
       async.auto({
-        insert: function(callback) {
-          brKey.addPublicKey(actor, originalPublicKey, callback);
-        },
-        readOrig: ['insert', (results, callback) => {
+        insert: callback => brKey.addPublicKey(
+          actor, originalPublicKey, callback),
+        orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        update: ['readOrig', (results, callback) => {
-          newPublicKey = brUtil.clone(results.readOrig[0]);
+        update: ['orig', (results, callback) => {
+          newPublicKey = brUtil.clone(results.orig[0]);
           newPublicKey.label = 'Key 01';
           newPublicKey.publicKeyPem = 'bogusPublicKey';
           newPublicKey.sysStatus = 'bogusStatus';
           brKey.updatePublicKey(actor, newPublicKey, callback);
         }],
-        readUpdate: ['update', (results, callback) => {
-          brKey.getPublicKey(queryPublicKey, actor, callback);
-        }],
-        test: ['readUpdate', (results, callback) => {
-          orig = results.readOrig;
-          final = results.readUpdate;
+        final: ['update', (results, callback) => brKey.getPublicKey(
+          queryPublicKey, actor, callback)],
+        test: ['final', (results, callback) => {
+          const {orig, final} = results;
           orig[0].label.should.equal(originalPublicKey.label);
           final[0].label.should.equal(newPublicKey.label);
-          orig[0].publicKeyPem.should.equal(
-            originalPublicKey.publicKeyPem);
-          final[0].publicKeyPem.should.equal(
-            originalPublicKey.publicKeyPem);
-          orig[0].owner.should.equal(actor.id);
-          final[0].owner.should.equal(actor.id);
+          orig[0].publicKeyPem.should.equal(publicKeyPem);
+          final[0].publicKeyPem.should.equal(publicKeyPem);
+          orig[0].owner.should.equal(owner);
+          final[0].owner.should.equal(owner);
+          orig[0].sysStatus.should.equal(final[0].sysStatus);
+          callback();
+        }]
+      }, done);
+    });
+
+    it('should update an Ed25519 key, excluding restricted fields', done => {
+      let newPublicKey = {};
+      let queryPublicKey;
+      const {publicKeyBase58} = mockData.goodKeyPairEd25519;
+      const {id: owner} = actor;
+      const label = 'Key 00';
+      const originalPublicKey = {label, publicKeyBase58, owner};
+
+      async.auto({
+        insert: callback => brKey.addPublicKey(
+          actor, originalPublicKey, callback),
+        orig: ['insert', (results, callback) => {
+          queryPublicKey = {id: originalPublicKey.id};
+          brKey.getPublicKey(queryPublicKey, actor, callback);
+        }],
+        update: ['orig', (results, callback) => {
+          newPublicKey = brUtil.clone(results.orig[0]);
+          newPublicKey.label = 'Key 01';
+          newPublicKey.publicKeyPem = 'bogusPublicKey';
+          newPublicKey.sysStatus = 'bogusStatus';
+          brKey.updatePublicKey(actor, newPublicKey, callback);
+        }],
+        final: ['update', (results, callback) => brKey.getPublicKey(
+          queryPublicKey, actor, callback)],
+        test: ['final', (results, callback) => {
+          const {orig, final} = results;
+          orig[0].label.should.equal(originalPublicKey.label);
+          final[0].label.should.equal(newPublicKey.label);
+          orig[0].publicKeyBase58.should.equal(publicKeyBase58);
+          final[0].publicKeyBase58.should.equal(publicKeyBase58);
+          orig[0].owner.should.equal(owner);
+          final[0].owner.should.equal(owner);
           orig[0].sysStatus.should.equal(final[0].sysStatus);
           callback();
         }]
@@ -106,7 +136,7 @@ describe('bedrock-key API: updatePublicKey', () => {
       newPublicKey.label = 'Key 01 Foo';
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           // set up second identity with permissions
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
@@ -164,7 +194,7 @@ describe('bedrock-key API: updatePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, callback);
         },
         readOrig: ['insert', (results, callback) => {
@@ -223,7 +253,7 @@ describe('bedrock-key API: updatePublicKey', () => {
       newPublicKey.label = 'Key 01';
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           // set up second identity w/ permission to add key
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
@@ -263,7 +293,7 @@ describe('bedrock-key API: updatePublicKey', () => {
       newPublicKey.label = 'Key 01';
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           // set up second identity w/ permission to add key
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;

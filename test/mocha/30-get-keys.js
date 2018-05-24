@@ -35,7 +35,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
         test: ['insert', (results, callback) => {
@@ -62,7 +62,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
         test: ['insert', (results, callback) => {
@@ -89,7 +89,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       const queryId = actor.id;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
         test: ['insert', (results, callback) => {
@@ -116,7 +116,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       const queryId = actor.id;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, privateKey, callback);
         },
         test: ['insert', (results, callback) => {
@@ -147,7 +147,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       samplePublicKey2.owner = actor.id;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           async.series([
             callback => brKey.addPublicKey(actor, samplePublicKey, callback),
             callback => brKey.addPublicKey(actor, samplePublicKey2, callback)
@@ -188,7 +188,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       samplePublicKey2.publicKeyPem = mockData.goodKeyPair2.publicKeyPem;
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
             samplePublicKey2.owner = secondActor.id;
@@ -249,7 +249,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
         test: ['insert', (results, callback) => {
@@ -284,7 +284,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       privateKey2.privateKeyPem = mockData.goodKeyPair2.privateKeyPem;
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           brIdentity.get(null, mockIdentity1.identity.id, (err, result) => {
             firstActor = result;
             samplePublicKey1.owner = firstActor.id;
@@ -347,7 +347,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
             samplePublicKey.owner = secondActor.id;
@@ -392,7 +392,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
             samplePublicKey.owner = secondActor.id;
@@ -434,7 +434,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       queryOptions.capability = 'sign';
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
             samplePublicKey.owner = secondActor.id;

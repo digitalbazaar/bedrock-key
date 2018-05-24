@@ -39,7 +39,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, callback);
         },
         readOrig: ['insert', (results, callback) => {
@@ -83,7 +83,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
         },
         readOrig: ['insert', (results, callback) => {
@@ -130,7 +130,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, callback);
         },
         revoke: ['insert', (results, callback) => {
@@ -188,7 +188,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
         },
         readOrig: ['insert', (results, callback) => {
@@ -240,7 +240,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: function(callback) {
+        insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
         },
         readOrig: ['insert', (results, callback) => {
@@ -302,7 +302,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
             callback();
@@ -342,7 +342,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        setup: function(callback) {
+        setup: callback => {
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
             callback();

@@ -121,6 +121,12 @@ mock.goodKeyPair2 = {
     '-----END RSA PRIVATE KEY-----\n'
 };
 
+mock.goodKeyPairEd25519 = {
+  publicKeyBase58: 'BveYC5JaPU5zjNhqDHfVq1QRibbzAznNLfUigAibapXj',
+  privateKeyBase58: '3ztCNwkbzLXyAdtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
+    'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuqK'
+};
+
 // the public and private keys are valid, but do not match
 mock.badKeyPair = {
   publicKeyPem: '-----BEGIN PUBLIC KEY-----\n' +
@@ -209,4 +215,35 @@ mock.badPrivateKey = {
   privateKeyPem: '-----BEGIN RSA PRIVATE KEY-----\n' +
     'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n' +
     '-----END RSA PRIVATE KEY-----\n'
+};
+
+// public key contains an invalid character
+mock.badKeyPairEd25519NonMatching = {
+  publicKeyBase58: 'C2hCh8FdAMBdpUpPw8tMRXqrRPkwuHx2ZtejFRehsxNG',
+  privateKeyBase58: '3ztCNwkbzLXyAdtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
+    'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuqK'
+};
+// public key contains an invalid character
+mock.badKeyPairEd25519InvalidPublicKey = {
+  publicKeyBase58: 'BveYC5JaPU5zj$hqDHfVq1QRibbzAznNLfUigAibapXj',
+  privateKeyBase58: '3ztCNwkbzLXyAdtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
+    'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuqK'
+};
+// public key is 1 char short
+mock.badKeyPairEd25519InvalidPublicKey2 = {
+  publicKeyBase58: 'BveYC5JaPU5zjNhqDHfVq1QRibbzAznNLfUigAibapX',
+  privateKeyBase58: '3ztCNwkbzLXyAdtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
+    'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuqK'
+};
+// private key contains an invalid character
+mock.badKeyPairEd25519InvalidPrivateKey = {
+  publicKeyBase58: 'BveYC5JaPU5zjNhqDHfVq1QRibbzAznNLfUigAibapXj',
+  privateKeyBase58: '3ztCNwkbzLXy$dtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
+    'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuqK'
+};
+// private key is 1 char short
+mock.badKeyPairEd25519InvalidPrivateKey2 = {
+  publicKeyBase58: 'BveYC5JaPU5zjNhqDHfVq1QRibbzAznNLfUigAibapXj',
+  privateKeyBase58: '3ztCNwkbzLXyAdtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
+    'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuq'
 };

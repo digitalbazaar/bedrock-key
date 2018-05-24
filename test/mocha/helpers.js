@@ -12,7 +12,7 @@ const uuid = require('uuid').v4;
 const api = {};
 module.exports = api;
 
-api.createIdentity = function(userName) {
+api.createIdentity = userName => {
   const newIdentity = {
     id: 'did:' + uuid(),
     type: 'Identity',
@@ -29,44 +29,36 @@ api.createIdentity = function(userName) {
   return newIdentity;
 };
 
-api.removeCollection = function(collection, callback) {
+api.removeCollection = (collection, callback) => {
   const collectionNames = [collection];
   database.openCollections(collectionNames, () => {
-    async.each(collectionNames, function(collectionName, callback) {
+    async.each(collectionNames, (collectionName, callback) => {
       database.collections[collectionName].remove({}, callback);
-    }, function(err) {
-      callback(err);
-    });
+    }, err => callback(err));
   });
 };
 
-api.removeCollections = function(callback) {
+api.removeCollections = callback => {
   const collectionNames = ['identity', 'eventLog', 'publicKey'];
   database.openCollections(collectionNames, () => {
     async.each(collectionNames, (collectionName, callback) => {
       database.collections[collectionName].remove({}, callback);
-    }, function(err) {
-      callback(err);
-    });
+    }, err => callback(err));
   });
 };
 
-api.prepareDatabase = function(mockData, callback) {
+api.prepareDatabase = (mockData, callback) => {
   async.series([
-    callback => {
-      api.removeCollections(callback);
-    },
-    callback => {
-      insertTestData(mockData, callback);
-    }
+    callback => api.removeCollections(callback),
+    callback => insertTestData(mockData, callback)
   ], callback);
 };
 
 // Insert identities and public keys used for testing into database
 function insertTestData(mockData, callback) {
-  async.forEachOf(mockData.identities, (identity, key, callback) => {
-    brIdentity.insert(null, identity.identity, callback);
-  }, err => {
+  async.forEachOf(mockData.identities, (identity, key, callback) =>
+    brIdentity.insert(null, identity.identity, callback),
+  err => {
     if(err) {
       if(!database.isDuplicateError(err)) {
         // duplicate error means test data is already loaded
