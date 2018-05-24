@@ -1,5 +1,14 @@
 # bedrock-key ChangeLog
 
+# 5.0.0 - TBD
+
+### Added
+- Support Ed25519 keys.
+
+### Changed
+- **Breaking** Change the compound index on `owner` and `pem` to a partial
+  index. This is in support of storing keys that are not in PEM format.
+
 # 4.1.0 - 2018-02-24
 
 ### Changed
@@ -14,7 +23,7 @@
 ## 4.0.0 - 2017-06-20
 
 ### Changed
-- **Breaking** Removed `generatePublicKeyId` API.
+- **Breaking** Remove `generatePublicKeyId` API.
 - Update `bedrock` dependency to v1.4.x.
 - Remove `bedrock-server` dependency.
 - Remove `ursa` dependency.
