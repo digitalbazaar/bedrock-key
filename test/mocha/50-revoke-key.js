@@ -41,7 +41,7 @@ describe('bedrock-key API: revokePublicKey', () => {
         }],
         revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, callback);
+          brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, callback);
         }],
         final: ['revoke', (results, callback) => brKey.getPublicKey(
           {actor, publicKey: queryPublicKey}, callback)],
@@ -82,7 +82,7 @@ describe('bedrock-key API: revokePublicKey', () => {
         }],
         revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, callback);
+          brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, callback);
         }],
         final: ['revoke', (results, callback) => brKey.getPublicKey(
           {actor, publicKey: queryPublicKey}, callback)],
@@ -125,10 +125,10 @@ describe('bedrock-key API: revokePublicKey', () => {
           {actor, publicKey: originalPublicKey}, callback),
         revoke: ['insert', (results, callback) => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, callback);
+          brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, callback);
         }],
         test: ['revoke', (results, callback) => {
-          brKey.revokePublicKey(actor, revPublicKey, err => {
+          brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, err => {
             should.exist(err);
             err.name.should.equal('NotFound');
             callback();
@@ -145,7 +145,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       const revPublicKey = 'https://bedrock.dev:18443/keys/foo';
-      brKey.revokePublicKey(actor, revPublicKey, err => {
+      brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, err => {
         should.exist(err);
         err.name.should.equal('NotFound');
       });
@@ -184,7 +184,7 @@ describe('bedrock-key API: revokePublicKey', () => {
         }],
         revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, callback);
+          brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, callback);
         }],
         final: ['revoke', (results, callback) => brKey.getPublicKey(
           {actor, publicKey: queryPublicKey}, callback)],
@@ -234,7 +234,7 @@ describe('bedrock-key API: revokePublicKey', () => {
         }],
         revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, callback);
+          brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, callback);
         }],
         final: ['revoke', (results, callback) => brKey.getPublicKey(
           {actor, publicKey: queryPublicKey}, callback)],
@@ -301,7 +301,7 @@ describe('bedrock-key API: revokePublicKey', () => {
         }],
         test: ['insert', (results, callback) => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, err => {
+          brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, err => {
             should.exist(err);
             err.name.should.equal('PermissionDenied');
             callback();
@@ -342,7 +342,7 @@ describe('bedrock-key API: revokePublicKey', () => {
         }],
         test: ['insert', (results, callback) => {
           revPublicKey = originalPublicKey.id;
-          brKey.revokePublicKey(actor, revPublicKey, err => {
+          brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, err => {
             should.exist(err);
             err.name.should.equal('PermissionDenied');
             callback();
