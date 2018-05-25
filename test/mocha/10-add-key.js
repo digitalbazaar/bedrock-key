@@ -313,6 +313,8 @@ describe('bedrock-key API: addPublicKey', () => {
           brKey.addPublicKey(actor, samplePublicKey, err => {
             should.exist(err);
             err.name.should.equal('DuplicateError');
+            should.exist(err.details.keyId);
+            err.details.keyId.should.equal(samplePublicKey.id);
             callback();
           })],
       }, done);
