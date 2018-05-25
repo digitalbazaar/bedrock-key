@@ -118,7 +118,7 @@ describe('bedrock-key API: updatePublicKey', () => {
 
       brKey.updatePublicKey({actor, publicKey: newPublicKey}, err => {
         should.exist(err);
-        err.name.should.equal('NotFound');
+        err.name.should.equal('NotFoundError');
         err.message.should.equal(
           'Could not update public key. Public key not found.');
       });

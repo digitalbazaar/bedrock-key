@@ -149,7 +149,7 @@ describe('bedrock-key API: getPublicKey', () => {
             {actor, publicKey: queryPublicKey}, (err, result) => {
               should.exist(err);
               should.not.exist(result);
-              err.name.should.equal('NotFound');
+              err.name.should.equal('NotFoundError');
               callback();
             });
         }]

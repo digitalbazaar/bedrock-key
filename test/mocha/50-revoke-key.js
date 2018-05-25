@@ -130,7 +130,7 @@ describe('bedrock-key API: revokePublicKey', () => {
         test: ['revoke', (results, callback) => {
           brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, err => {
             should.exist(err);
-            err.name.should.equal('NotFound');
+            err.name.should.equal('NotFoundError');
             callback();
           });
         }]
@@ -147,7 +147,7 @@ describe('bedrock-key API: revokePublicKey', () => {
       const revPublicKey = 'https://bedrock.dev:18443/keys/foo';
       brKey.revokePublicKey({actor, publicKeyId: revPublicKey}, err => {
         should.exist(err);
-        err.name.should.equal('NotFound');
+        err.name.should.equal('NotFoundError');
       });
       done();
     });
