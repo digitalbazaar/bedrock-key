@@ -37,7 +37,7 @@ describe('bedrock-key API: addPublicKey', () => {
 
         async.auto({
           insert: callback => {
-            brKey.addPublicKey(actor, samplePublicKey, callback);
+            brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback);
           },
           test: ['insert', (results, callback) => {
             database.collections.publicKey.find({
@@ -61,9 +61,8 @@ describe('bedrock-key API: addPublicKey', () => {
         privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
         async.auto({
-          insert: callback => {
-            brKey.addPublicKey(actor, samplePublicKey, privateKey, callback);
-          },
+          insert: callback => brKey.addPublicKey(
+            {actor, publicKey: samplePublicKey, privateKey}, callback),
           test: ['insert', (results, callback) => {
             database.collections.publicKey.find({
               'publicKey.owner': actor.id
@@ -81,14 +80,14 @@ describe('bedrock-key API: addPublicKey', () => {
       });
       it('returns error if adding public key w/ bad private key', done => {
         const samplePublicKey = {};
-        const PrivateKey = {};
+        const privateKey = {};
 
         samplePublicKey.publicKeyPem = mockData.badKeyPair.publicKeyPem;
         samplePublicKey.owner = actor.id;
-        PrivateKey.privateKeyPem = mockData.badKeyPair.privateKeyPem;
+        privateKey.privateKeyPem = mockData.badKeyPair.privateKeyPem;
 
         brKey.addPublicKey(
-          actor, samplePublicKey, PrivateKey, err => {
+          {actor, publicKey: samplePublicKey, privateKey}, err => {
             should.exist(err);
             err.name.should.equal('InvalidKeyPair');
             done();
@@ -102,9 +101,8 @@ describe('bedrock-key API: addPublicKey', () => {
         const samplePublicKey = {publicKeyBase58, owner};
 
         async.auto({
-          insert: callback => {
-            brKey.addPublicKey(actor, samplePublicKey, callback);
-          },
+          insert: callback => brKey.addPublicKey(
+            {actor, publicKey: samplePublicKey}, callback),
           test: ['insert', (results, callback) => {
             database.collections.publicKey.find({
               'publicKey.owner': actor.id
@@ -124,10 +122,9 @@ describe('bedrock-key API: addPublicKey', () => {
         const samplePrivateKey = {privateKeyBase58};
 
         async.auto({
-          insert: callback => {
-            brKey.addPublicKey(
-              actor, samplePublicKey, samplePrivateKey, callback);
-          },
+          insert: callback => brKey.addPublicKey(
+            {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
+            callback),
           test: ['insert', (results, callback) => {
             database.collections.publicKey.find({
               'publicKey.owner': actor.id
@@ -151,7 +148,8 @@ describe('bedrock-key API: addPublicKey', () => {
         const samplePrivateKey = {privateKeyBase58};
 
         brKey.addPublicKey(
-          actor, samplePublicKey, samplePrivateKey, err => {
+          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
+          err => {
             should.exist(err);
             err.name.should.equal('InvalidKeyPair');
             err.message.should.contain('Key pair does not match');
@@ -167,7 +165,8 @@ describe('bedrock-key API: addPublicKey', () => {
         const samplePrivateKey = {privateKeyBase58};
 
         brKey.addPublicKey(
-          actor, samplePublicKey, samplePrivateKey, err => {
+          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
+          err => {
             should.exist(err);
             err.name.should.equal('InvalidPublicKey');
             err.cause.message.should.contain('Non-base58 character');
@@ -183,7 +182,8 @@ describe('bedrock-key API: addPublicKey', () => {
         const samplePrivateKey = {privateKeyBase58};
 
         brKey.addPublicKey(
-          actor, samplePublicKey, samplePrivateKey, err => {
+          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
+          err => {
             should.exist(err);
             err.name.should.equal('InvalidPublicKey');
             err.cause.message.should.contain(
@@ -200,7 +200,8 @@ describe('bedrock-key API: addPublicKey', () => {
         const samplePrivateKey = {privateKeyBase58};
 
         brKey.addPublicKey(
-          actor, samplePublicKey, samplePrivateKey, err => {
+          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
+          err => {
             should.exist(err);
             err.name.should.equal('InvalidPrivateKey');
             err.cause.message.should.contain('Non-base58 character');
@@ -216,7 +217,8 @@ describe('bedrock-key API: addPublicKey', () => {
         const samplePrivateKey = {privateKeyBase58};
 
         brKey.addPublicKey(
-          actor, samplePublicKey, samplePrivateKey, err => {
+          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
+          err => {
             should.exist(err);
             err.name.should.equal('InvalidPrivateKey');
             err.cause.message.should.contain(
@@ -232,13 +234,12 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id + 1;
 
-      brKey.addPublicKey(
-        actor, samplePublicKey, err => {
-          should.exist(err);
-          err.name.should.equal('PermissionDenied');
-          err.details.sysPermission.should.equal('PUBLIC_KEY_CREATE');
-          done();
-        });
+      brKey.addPublicKey({actor, publicKey: samplePublicKey}, err => {
+        should.exist(err);
+        err.name.should.equal('PermissionDenied');
+        err.details.sysPermission.should.equal('PUBLIC_KEY_CREATE');
+        done();
+      });
     });
 
     it('should add default publicKey fields: status, label, type', done => {
@@ -248,9 +249,8 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
-        },
+        insert: callback =>
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) => {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
@@ -280,7 +280,7 @@ describe('bedrock-key API: addPublicKey', () => {
 
       async.auto({
         insert: callback =>
-          brKey.addPublicKey(actor, samplePublicKey, callback),
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) =>
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
@@ -308,9 +308,9 @@ describe('bedrock-key API: addPublicKey', () => {
 
       async.auto({
         insert: callback =>
-          brKey.addPublicKey(actor, samplePublicKey, callback),
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback),
         insertAgain: ['insert', (results, callback) =>
-          brKey.addPublicKey(actor, samplePublicKey, err => {
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, err => {
             should.exist(err);
             err.name.should.equal('DuplicateError');
             should.exist(err.details.keyId);
@@ -339,10 +339,9 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
-        },
-        test: ['insert', (results, callback) => {
+        insert: callback =>
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback),
+        test: ['insert', (results, callback) =>
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
           }).toArray((err, result) => {
@@ -351,8 +350,7 @@ describe('bedrock-key API: addPublicKey', () => {
             result[0].publicKey.publicKeyPem.should.equal(
               samplePublicKey.publicKeyPem);
             callback();
-          });
-        }]
+          })]
       }, done);
     });
 
@@ -363,10 +361,9 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.owner = actor.id + 1;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
-        },
-        test: ['insert', (results, callback) => {
+        insert: callback =>
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback),
+        test: ['insert', (results, callback) =>
           database.collections.publicKey.find({
             'publicKey.owner': samplePublicKey.owner
           }).toArray((err, result) => {
@@ -375,8 +372,7 @@ describe('bedrock-key API: addPublicKey', () => {
             result[0].publicKey.publicKeyPem.should.equal(
               samplePublicKey.publicKeyPem);
             callback();
-          });
-        }]
+          })]
       }, done);
     });
 
@@ -398,13 +394,12 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
 
-      brKey.addPublicKey(
-        actor, samplePublicKey, err => {
-          should.exist(err);
-          err.name.should.equal('PermissionDenied');
-          err.details.sysPermission.should.equal('PUBLIC_KEY_CREATE');
-          done();
-        });
+      brKey.addPublicKey({actor, publicKey: samplePublicKey}, err => {
+        should.exist(err);
+        err.name.should.equal('PermissionDenied');
+        err.details.sysPermission.should.equal('PUBLIC_KEY_CREATE');
+        done();
+      });
     });
 
   }); // describe: noPermissionUser
@@ -419,13 +414,12 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = 'owner';
 
-      brKey.addPublicKey(
-        actor, samplePublicKey, err => {
-          should.exist(err);
-          err.name.should.equal('PermissionDenied');
-          err.details.sysPermission.should.equal('PUBLIC_KEY_CREATE');
-          done();
-        });
+      brKey.addPublicKey({actor, publicKey: samplePublicKey}, err => {
+        should.exist(err);
+        err.name.should.equal('PermissionDenied');
+        err.details.sysPermission.should.equal('PUBLIC_KEY_CREATE');
+        done();
+      });
     });
 
   }); // describe: no authentication

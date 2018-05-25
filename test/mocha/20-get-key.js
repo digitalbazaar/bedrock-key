@@ -36,7 +36,7 @@ describe('bedrock-key API: getPublicKey', () => {
 
       async.auto({
         insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback);
         },
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
@@ -60,7 +60,7 @@ describe('bedrock-key API: getPublicKey', () => {
 
       async.auto({
         insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback);
         },
         test: ['insert', (results, callback) => {
           const queryPublicKey = {id: samplePublicKey.id};
@@ -88,7 +88,8 @@ describe('bedrock-key API: getPublicKey', () => {
         insert: callback => {
           samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
           samplePublicKey.owner = mockIdentity2.identity.id;
-          brKey.addPublicKey(null, samplePublicKey, callback);
+          brKey.addPublicKey(
+            {actor: null, publicKey: samplePublicKey}, callback);
         },
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
@@ -114,7 +115,7 @@ describe('bedrock-key API: getPublicKey', () => {
 
       async.auto({
         insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback);
         },
         test: ['insert', (results, callback) => {
           queryPublicKey.owner = samplePublicKey.owner;
@@ -140,7 +141,7 @@ describe('bedrock-key API: getPublicKey', () => {
 
       async.auto({
         insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
+          brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback);
         },
         test: ['insert', (results, callback) => {
           queryPublicKey.id = 'https://not-found';
@@ -162,10 +163,9 @@ describe('bedrock-key API: getPublicKey', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(
-            actor, samplePublicKey, samplePrivateKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
+          callback),
         test: ['insert', (results, callback) => {
           const queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
@@ -190,10 +190,9 @@ describe('bedrock-key API: getPublicKey', () => {
       const samplePrivateKey = {privateKeyBase58};
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(
-            actor, samplePublicKey, samplePrivateKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
+          callback),
         test: ['insert', (results, callback) => {
           const queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
@@ -230,9 +229,8 @@ describe('bedrock-key API: getPublicKey', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
@@ -257,9 +255,8 @@ describe('bedrock-key API: getPublicKey', () => {
       samplePublicKey.owner = actor.id + 1;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
@@ -300,9 +297,8 @@ describe('bedrock-key API: getPublicKey', () => {
       samplePublicKey.owner = secondActor.id;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(null, samplePublicKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor: null, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
@@ -326,29 +322,28 @@ describe('bedrock-key API: getPublicKey', () => {
       // create second identity for second public key
       const mockIdentity2 = mockData.identities.regularUser;
       const secondActor = mockIdentity2.identity;
-      const privateKey = {};
+      const samplePrivateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = secondActor.id;
-      privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
+      samplePrivateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(null, samplePublicKey, privateKey, callback);
-        },
+        insert: callback => brKey.addPublicKey({
+          actor: null, publicKey: samplePublicKey, privateKey: samplePrivateKey
+        }, callback),
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
-          brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
-              assertNoError(err);
-              should.exist(result);
-              result.should.be.an('object');
-              const {publicKey, privateKey} = result;
-              publicKey.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
-              should.not.exist(publicKey.privateKey);
-              should.not.exist(privateKey);
-              callback();
-            });
+          brKey.getPublicKey(queryPublicKey, actor, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.be.an('object');
+            const {publicKey, privateKey} = result;
+            publicKey.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
+            should.not.exist(publicKey.privateKey);
+            should.not.exist(privateKey);
+            callback();
+          });
         }]
       }, done);
     });
@@ -365,16 +360,16 @@ describe('bedrock-key API: getPublicKey', () => {
       // create second identity to insert public key
       const mockIdentity = mockData.identities.regularUser;
       const secondActor = mockIdentity.identity;
-      const privateKey = {};
+      const samplePrivateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = secondActor.id;
-      privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
+      samplePrivateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(null, samplePublicKey, privateKey, callback);
-        },
+        insert: callback => brKey.addPublicKey({
+          actor: null, publicKey: samplePublicKey, privateKey: samplePrivateKey
+        }, callback),
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
@@ -402,16 +397,16 @@ describe('bedrock-key API: getPublicKey', () => {
       // create second identity to insert public key
       const mockIdentity = mockData.identities.regularUser;
       const secondActor = mockIdentity.identity;
-      const privateKey = {};
+      const samplePrivateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = secondActor.id;
-      privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
+      samplePrivateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(null, samplePublicKey, privateKey, callback);
-        },
+        insert: callback => brKey.addPublicKey({
+          actor: null, publicKey: samplePublicKey, privateKey: samplePrivateKey
+        }, callback),
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(

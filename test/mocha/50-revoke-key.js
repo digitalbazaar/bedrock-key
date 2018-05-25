@@ -10,12 +10,8 @@ const brIdentity = require('bedrock-identity');
 const helpers = require('./helpers');
 
 describe('bedrock-key API: revokePublicKey', () => {
-  before(done => {
-    helpers.prepareDatabase(mockData, done);
-  });
-  beforeEach(function(done) {
-    helpers.removeCollection('publicKey', done);
-  });
+  before(done => helpers.prepareDatabase(mockData, done));
+  beforeEach(done => helpers.removeCollection('publicKey', done));
 
   describe('authenticated as regularUser', () => {
     const mockIdentity = mockData.identities.regularUser;
@@ -37,8 +33,8 @@ describe('bedrock-key API: revokePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        insert: callback =>
-          brKey.addPublicKey(actor, originalPublicKey, callback),
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: originalPublicKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
@@ -78,9 +74,8 @@ describe('bedrock-key API: revokePublicKey', () => {
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: originalPublicKey, privateKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
           brKey.getPublicKey(queryPublicKey, actor, callback);
@@ -127,9 +122,8 @@ describe('bedrock-key API: revokePublicKey', () => {
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, originalPublicKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: originalPublicKey}, callback),
         revoke: ['insert', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
@@ -183,9 +177,8 @@ describe('bedrock-key API: revokePublicKey', () => {
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: originalPublicKey, privateKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
           brKey.getPublicKey(queryPublicKey, actor, callback);
@@ -235,9 +228,8 @@ describe('bedrock-key API: revokePublicKey', () => {
       privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: originalPublicKey, privateKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
           brKey.getPublicKey(queryPublicKey, actor, callback);
@@ -305,9 +297,10 @@ describe('bedrock-key API: revokePublicKey', () => {
             callback();
           });
         },
-        insert: ['setup', function(results, callback) {
+        insert: ['setup', (results, callback) => {
           originalPublicKey.owner = secondActor.id;
-          brKey.addPublicKey(secondActor, originalPublicKey, callback);
+          brKey.addPublicKey(
+            {actor: secondActor, publicKey: originalPublicKey}, callback);
         }],
         test: ['insert', (results, callback) => {
           revPublicKey = originalPublicKey.id;
@@ -345,9 +338,10 @@ describe('bedrock-key API: revokePublicKey', () => {
             callback();
           });
         },
-        insert: ['setup', function(results, callback) {
+        insert: ['setup', (results, callback) => {
           originalPublicKey.owner = secondActor.id;
-          brKey.addPublicKey(secondActor, originalPublicKey, callback);
+          brKey.addPublicKey(
+            {actor: secondActor, publicKey: originalPublicKey}, callback);
         }],
         test: ['insert', (results, callback) => {
           revPublicKey = originalPublicKey.id;

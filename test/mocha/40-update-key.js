@@ -38,7 +38,7 @@ describe('bedrock-key API: updatePublicKey', () => {
 
       async.auto({
         insert: callback => brKey.addPublicKey(
-          actor, originalPublicKey, callback),
+          {actor, publicKey: originalPublicKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
@@ -78,7 +78,7 @@ describe('bedrock-key API: updatePublicKey', () => {
 
       async.auto({
         insert: callback => brKey.addPublicKey(
-          actor, originalPublicKey, callback),
+          {actor, publicKey: originalPublicKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
@@ -147,9 +147,8 @@ describe('bedrock-key API: updatePublicKey', () => {
             callback(err, result);
           });
         },
-        insert: ['setup', function(results, callback) {
-          brKey.addPublicKey(actor, originalPublicKey, callback);
-        }],
+        insert: ['setup', (results, callback) => brKey.addPublicKey(
+          {actor, publicKey: originalPublicKey}, callback)],
         update: ['insert', (results, callback) => {
           newPublicKey.id = originalPublicKey.id;
           // Unsanitized publicKey owner should be deleted before API call
@@ -190,17 +189,14 @@ describe('bedrock-key API: updatePublicKey', () => {
       const originalPublicKey = {};
       let newPublicKey = {};
       let queryPublicKey;
-      let orig;
-      let final;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, originalPublicKey, callback);
-        },
+        insert: callback => brKey.addPublicKey(
+          {actor, publicKey: originalPublicKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
@@ -265,9 +261,10 @@ describe('bedrock-key API: updatePublicKey', () => {
             callback(err, result);
           });
         },
-        insert: ['setup', function(results, callback) {
+        insert: ['setup', (results, callback) => {
           originalPublicKey.owner = secondActor.id;
-          brKey.addPublicKey(secondActor, originalPublicKey, callback);
+          brKey.addPublicKey(
+            {actor: secondActor, publicKey: originalPublicKey}, callback);
         }],
         test: ['insert', (results, callback) => {
           newPublicKey.id = originalPublicKey.id;
@@ -305,9 +302,10 @@ describe('bedrock-key API: updatePublicKey', () => {
             callback(err, result);
           });
         },
-        insert: ['setup', function(results, callback) {
+        insert: ['setup', (results, callback) => {
           originalPublicKey.owner = secondActor.id;
-          brKey.addPublicKey(secondActor, originalPublicKey, callback);
+          brKey.addPublicKey(
+            {actor: secondActor, publicKey: originalPublicKey}, callback);
         }],
         test: ['insert', (results, callback) => {
           newPublicKey.id = originalPublicKey.id;

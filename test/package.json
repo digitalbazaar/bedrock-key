@@ -5,7 +5,8 @@
   "main": "test",
   "private": true,
   "scripts": {
-    "test": "node --preserve-symlinks test.js test"
+    "test": "node --preserve-symlinks test.js test",
+    "watch": "grunt watch"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,10 @@
     "bedrock-permission": "^2.4.2",
     "bedrock-redis": "^3.2.0",
     "bedrock-test": "^2.0.0",
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-shell": "^2.1.0",
     "uuid": "^3.2.1"
   }
 }
