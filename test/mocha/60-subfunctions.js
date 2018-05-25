@@ -30,7 +30,7 @@ describe('bedrock-key API sub-functions', () => {
         mockData.goodKeyPair.publicKeyPem,
         mockData.goodKeyPair.privateKeyPem,
         function(err) {
-          should.not.exist(err);
+          assertNoError(err);
           done();
         });
     });

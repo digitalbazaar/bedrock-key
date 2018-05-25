@@ -39,16 +39,15 @@ describe('bedrock-key API: getPublicKeys', () => {
           {actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) => {
           queryId = actor.id;
-          brKey.getPublicKeys(
-            queryId, actor, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(1);
-              result[0].publicKey.publicKeyPem.should.equal(
-                samplePublicKey.publicKeyPem);
-              result[0].publicKey.owner.should.equal(queryId);
-              callback();
-            });
+          brKey.getPublicKeys({id: queryId, actor}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(1);
+            result[0].publicKey.publicKeyPem.should.equal(
+              samplePublicKey.publicKeyPem);
+            result[0].publicKey.owner.should.equal(queryId);
+            callback();
+          });
         }]
       }, done);
     });
@@ -66,70 +65,66 @@ describe('bedrock-key API: getPublicKeys', () => {
         test: ['insert', (results, callback) => {
           // create id that will not be found
           queryId = actor.id + 1;
-          brKey.getPublicKeys(
-            queryId, actor, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(0);
-              callback();
-            });
+          brKey.getPublicKeys({id: queryId, actor}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(0);
+            callback();
+          });
         }]
       }, done);
     });
 
     it('should return no key for an id w/ sign option and no pvt Key', done => {
       const samplePublicKey = {};
-      const queryOptions = {};
+      const options = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
-      queryOptions.capability = 'sign';
+      options.capability = 'sign';
       const queryId = actor.id;
 
       async.auto({
         insert: callback => brKey.addPublicKey(
           {actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) => {
-          brKey.getPublicKeys(
-            queryId, actor, queryOptions, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(0);
-              callback();
-            });
+          brKey.getPublicKeys({actor, id: queryId, options}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(0);
+            callback();
+          });
         }]
       }, done);
     });
 
     it('should return a key for an id w sign option and privateKey', done => {
       const samplePublicKey = {};
-      const queryOptions = {};
+      const options = {};
       const samplePrivateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       samplePublicKey.owner = actor.id;
       samplePrivateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
-      queryOptions.capability = 'sign';
+      options.capability = 'sign';
       const queryId = actor.id;
 
       async.auto({
         insert: callback => brKey.addPublicKey(
           {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
           callback),
-        test: ['insert', (results, callback) => {
-          brKey.getPublicKeys(
-            queryId, actor, queryOptions, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(1);
-              result[0].publicKey.publicKeyPem.should.equal(
-                samplePublicKey.publicKeyPem);
-              result[0].publicKey.owner.should.equal(queryId);
-              result[0].publicKey.privateKey.privateKeyPem.should.equal(
-                samplePrivateKey.privateKeyPem);
-              callback();
-            });
-        }]
+        test: ['insert', (results, callback) => brKey.getPublicKeys(
+          {actor, id: queryId, options}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(1);
+            result[0].publicKey.publicKeyPem.should.equal(
+              samplePublicKey.publicKeyPem);
+            result[0].publicKey.owner.should.equal(queryId);
+            result[0].publicKey.privateKey.privateKeyPem.should.equal(
+              samplePrivateKey.privateKeyPem);
+            callback();
+          })]
       }, done);
     });
 
@@ -154,19 +149,18 @@ describe('bedrock-key API: getPublicKeys', () => {
         },
         test: ['insert', (results, callback) => {
           queryId = actor.id;
-          brKey.getPublicKeys(
-            queryId, actor, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(2);
-              result[0].publicKey.publicKeyPem.should.equal(
-                samplePublicKey.publicKeyPem);
-              result[0].publicKey.owner.should.equal(queryId);
-              result[1].publicKey.publicKeyPem.should.equal(
-                samplePublicKey2.publicKeyPem);
-              result[1].publicKey.owner.should.equal(queryId);
-              callback();
-            });
+          brKey.getPublicKeys({actor, id: queryId}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(2);
+            result[0].publicKey.publicKeyPem.should.equal(
+              samplePublicKey.publicKeyPem);
+            result[0].publicKey.owner.should.equal(queryId);
+            result[1].publicKey.publicKeyPem.should.equal(
+              samplePublicKey2.publicKeyPem);
+            result[1].publicKey.owner.should.equal(queryId);
+            callback();
+          });
         }]
       }, done);
     });
@@ -187,13 +181,12 @@ describe('bedrock-key API: getPublicKeys', () => {
       samplePublicKey2.publicKeyPem = mockData.goodKeyPair2.publicKeyPem;
 
       async.auto({
-        setup: callback => {
+        setup: callback =>
           brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
             secondActor = result;
             samplePublicKey2.owner = secondActor.id;
             callback();
-          });
-        },
+          }),
         insert: ['setup', (results, callback) => {
           async.series([
             callback => brKey.addPublicKey(
@@ -204,11 +197,11 @@ describe('bedrock-key API: getPublicKeys', () => {
         }],
         get1: ['insert', (results, callback) => {
           queryId = actor.id;
-          brKey.getPublicKeys(queryId, actor, callback);
+          brKey.getPublicKeys({actor, id: queryId}, callback);
         }],
         get2: ['insert', (results, callback) => {
           queryId2 = secondActor.id;
-          brKey.getPublicKeys(queryId2, actor, callback);
+          brKey.getPublicKeys({actor, id: queryId2}, callback);
         }],
         test: ['get2', 'get1', (results, callback) => {
           tr1 = results.get1;
@@ -253,16 +246,15 @@ describe('bedrock-key API: getPublicKeys', () => {
           {actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) => {
           queryId = actor.id;
-          brKey.getPublicKeys(
-            queryId, actor, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(1);
-              result[0].publicKey.publicKeyPem.should.equal(
-                samplePublicKey.publicKeyPem);
-              result[0].publicKey.owner.should.equal(queryId);
-              callback();
-            });
+          brKey.getPublicKeys({actor, id: queryId}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(1);
+            result[0].publicKey.publicKeyPem.should.equal(
+              samplePublicKey.publicKeyPem);
+            result[0].publicKey.owner.should.equal(queryId);
+            callback();
+          });
         }]
       }, done);
     });
@@ -305,8 +297,8 @@ describe('bedrock-key API: getPublicKeys', () => {
         }],
         test: ['insert', (results, callback) => {
           queryId = firstActor.id;
-          brKey.getPublicKeys(queryId, actor, (err, result) => {
-            should.not.exist(err);
+          brKey.getPublicKeys({actor, id: queryId}, (err, result) => {
+            assertNoError(err);
             should.exist(result);
             result.should.have.length(2);
             result[0].publicKey.publicKeyPem.should.equal(
@@ -363,17 +355,16 @@ describe('bedrock-key API: getPublicKeys', () => {
         }, callback)],
         test: ['insert', (results, callback) => {
           queryId = samplePublicKey.owner;
-          brKey.getPublicKeys(
-            queryId, actor, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(1);
-              result[0].publicKey.publicKeyPem.should.equal(
-                samplePublicKey.publicKeyPem);
-              result[0].publicKey.owner.should.equal(queryId);
-              should.not.exist(result[0].publicKey.privateKey);
-              callback();
-            });
+          brKey.getPublicKeys({actor, id: queryId}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(1);
+            result[0].publicKey.publicKeyPem.should.equal(
+              samplePublicKey.publicKeyPem);
+            result[0].publicKey.owner.should.equal(queryId);
+            should.not.exist(result[0].publicKey.privateKey);
+            callback();
+          });
         }]
       }, done);
     });
@@ -408,17 +399,16 @@ describe('bedrock-key API: getPublicKeys', () => {
         }, callback)],
         test: ['insert', (results, callback) => {
           queryId = samplePublicKey.owner;
-          brKey.getPublicKeys(
-            queryId, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(1);
-              result[0].publicKey.publicKeyPem.should.equal(
-                samplePublicKey.publicKeyPem);
-              result[0].publicKey.owner.should.equal(queryId);
-              should.not.exist(result[0].publicKey.privateKey);
-              callback();
-            });
+          brKey.getPublicKeys({id: queryId}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(1);
+            result[0].publicKey.publicKeyPem.should.equal(
+              samplePublicKey.publicKeyPem);
+            result[0].publicKey.owner.should.equal(queryId);
+            should.not.exist(result[0].publicKey.privateKey);
+            callback();
+          });
         }]
       }, done);
     });
@@ -426,7 +416,7 @@ describe('bedrock-key API: getPublicKeys', () => {
     it('should return no public key for no actor w/ sign option', done => {
       const samplePublicKey = {};
       let queryId;
-      const queryOptions = {};
+      const options = {};
       const actor = {}; // undefined;
 
       // create second identity to insert public key
@@ -434,7 +424,7 @@ describe('bedrock-key API: getPublicKeys', () => {
       let secondActor;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      queryOptions.capability = 'sign';
+      options.capability = 'sign';
 
       async.auto({
         setup: callback => {
@@ -448,13 +438,12 @@ describe('bedrock-key API: getPublicKeys', () => {
           {actor: secondActor, publicKey: samplePublicKey}, callback)],
         test: ['insert', (results, callback) => {
           queryId = samplePublicKey.owner;
-          brKey.getPublicKeys(
-            queryId, actor, queryOptions, (err, result) => {
-              should.not.exist(err);
-              should.exist(result);
-              result.should.have.length(0);
-              callback();
-            });
+          brKey.getPublicKeys({actor, id: queryId, options}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.have.length(0);
+            callback();
+          });
         }]
       }, done);
     });
