@@ -25,47 +25,47 @@ describe('bedrock-key API sub-functions', () => {
 
   describe('check key pairs', () => {
     // Tests checkKeyPair
-    it('should validate a keypair', function(done) {
-      brKey.checkKeyPair(
-        mockData.goodKeyPair.publicKeyPem,
-        mockData.goodKeyPair.privateKeyPem,
-        function(err) {
-          assertNoError(err);
-          done();
-        });
+    it('should validate a keypair', done => {
+      const {publicKeyPem, privateKeyPem} = mockData.goodKeyPair;
+      const publicKey = {publicKeyPem};
+      const privateKey = {privateKeyPem};
+      brKey.checkKeyPair({privateKey, publicKey}, err => {
+        assertNoError(err);
+        done();
+      });
     });
 
-    it('should error on an invalid keypair', function(done) {
-      brKey.checkKeyPair(
-        mockData.badKeyPair.publicKeyPem,
-        mockData.badKeyPair.privateKeyPem,
-        function(err) {
-          should.exist(err);
-          err.name.should.equal('InvalidKeyPair');
-          done();
-        });
+    it('should error on an invalid keypair', done => {
+      const {publicKeyPem, privateKeyPem} = mockData.badKeyPair;
+      const publicKey = {publicKeyPem};
+      const privateKey = {privateKeyPem};
+      brKey.checkKeyPair({privateKey, publicKey}, err => {
+        should.exist(err);
+        err.name.should.equal('InvalidKeyPair');
+        done();
+      });
     });
 
-    it('should error on an invalid public key', function(done) {
-      brKey.checkKeyPair(
-        mockData.badPublicKey.publicKeyPem,
-        mockData.badPublicKey.privateKeyPem,
-        function(err) {
-          should.exist(err);
-          err.name.should.equal('InvalidPublicKey');
-          done();
-        });
+    it('should error on an invalid public key', done => {
+      const {publicKeyPem, privateKeyPem} = mockData.badPublicKey;
+      const publicKey = {publicKeyPem};
+      const privateKey = {privateKeyPem};
+      brKey.checkKeyPair({privateKey, publicKey}, err => {
+        should.exist(err);
+        err.name.should.equal('InvalidPublicKey');
+        done();
+      });
     });
 
-    it('should error on an invalid private key', function(done) {
-      brKey.checkKeyPair(
-        mockData.badPrivateKey.publicKeyPem,
-        mockData.badPrivateKey.privateKeyPem,
-        function(err) {
-          should.exist(err);
-          err.name.should.equal('InvalidPrivateKey');
-          done();
-        });
+    it('should error on an invalid private key', done => {
+      const {publicKeyPem, privateKeyPem} = mockData.badPrivateKey;
+      const publicKey = {publicKeyPem};
+      const privateKey = {privateKeyPem};
+      brKey.checkKeyPair({privateKey, publicKey}, err => {
+        should.exist(err);
+        err.name.should.equal('InvalidPrivateKey');
+        done();
+      });
     });
 
   }); // describe check key pairs
