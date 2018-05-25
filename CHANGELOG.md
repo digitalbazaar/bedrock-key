@@ -9,6 +9,8 @@
 - **Breaking** Change the compound index on `owner` and `pem` to a partial
   non-unique index. This is in support of storing keys that are not in PEM
   format.
+- **Breaking** Return `DuplicateError` on an attempt to add key with duplicate
+  `id` instead of a `MongoError`.
 
 # 4.1.0 - 2018-02-24
 

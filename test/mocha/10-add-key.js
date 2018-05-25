@@ -9,6 +9,7 @@ const mockData = require('./mock.data');
 const brIdentity = require('bedrock-identity');
 const database = require('bedrock-mongodb');
 const helpers = require('./helpers');
+const uuid = require('uuid/v4');
 
 describe('bedrock-key API: addPublicKey', () => {
   before(done => {
@@ -35,13 +36,13 @@ describe('bedrock-key API: addPublicKey', () => {
         samplePublicKey.owner = actor.id;
 
         async.auto({
-          insert: (callback) => {
+          insert: callback => {
             brKey.addPublicKey(actor, samplePublicKey, callback);
           },
           test: ['insert', (results, callback) => {
             database.collections.publicKey.find({
               'publicKey.owner': actor.id
-            }).toArray(function(err, result) {
+            }).toArray((err, result) => {
               assertNoError(err);
               should.exist(result);
               result[0].publicKey.publicKeyPem.should.equal(
@@ -60,13 +61,13 @@ describe('bedrock-key API: addPublicKey', () => {
         privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
         async.auto({
-          insert: (callback) => {
+          insert: callback => {
             brKey.addPublicKey(actor, samplePublicKey, privateKey, callback);
           },
           test: ['insert', (results, callback) => {
             database.collections.publicKey.find({
               'publicKey.owner': actor.id
-            }).toArray(function(err, result) {
+            }).toArray((err, result) => {
               assertNoError(err);
               should.exist(result);
               result[0].publicKey.publicKeyPem.should.equal(
@@ -101,13 +102,13 @@ describe('bedrock-key API: addPublicKey', () => {
         const samplePublicKey = {publicKeyBase58, owner};
 
         async.auto({
-          insert: (callback) => {
+          insert: callback => {
             brKey.addPublicKey(actor, samplePublicKey, callback);
           },
           test: ['insert', (results, callback) => {
             database.collections.publicKey.find({
               'publicKey.owner': actor.id
-            }).toArray(function(err, result) {
+            }).toArray((err, result) => {
               assertNoError(err);
               should.exist(result);
               result[0].publicKey.publicKeyBase58.should.equal(publicKeyBase58);
@@ -130,7 +131,7 @@ describe('bedrock-key API: addPublicKey', () => {
           test: ['insert', (results, callback) => {
             database.collections.publicKey.find({
               'publicKey.owner': actor.id
-            }).toArray(function(err, result) {
+            }).toArray((err, result) => {
               assertNoError(err);
               should.exist(result);
               result[0].publicKey.publicKeyBase58.should.equal(
@@ -247,13 +248,13 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: (callback) => {
+        insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
         test: ['insert', (results, callback) => {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
-          }).toArray(function(err, result) {
+          }).toArray((err, result) => {
             assertNoError(err);
             should.exist(result);
             result[0].publicKey.sysStatus.should.equal('active');
@@ -266,23 +267,24 @@ describe('bedrock-key API: addPublicKey', () => {
     });
 
     it('should add non-default status, label, type, and id', done => {
-      const samplePublicKey = {};
-
-      samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
-      samplePublicKey.sysStatus = 'non-default-status';
-      samplePublicKey.label = 'non-default-label';
-      samplePublicKey.type = 'non-default-type';
-      samplePublicKey.id = 'https://non.default.id/1.1.1.1';
+      const {publicKeyPem} = mockData.goodKeyPair;
+      const {id: owner} = actor;
+      const samplePublicKey = {
+        id: `https://non.default.id/${uuid()}`,
+        label: 'non-default-label',
+        owner,
+        publicKeyPem,
+        sysStatus: 'non-default-status',
+        type: 'non-default-type'
+      };
 
       async.auto({
-        insert: (callback) => {
-          brKey.addPublicKey(actor, samplePublicKey, callback);
-        },
-        test: ['insert', (results, callback) => {
+        insert: callback =>
+          brKey.addPublicKey(actor, samplePublicKey, callback),
+        test: ['insert', (results, callback) =>
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
-          }).toArray(function(err, result) {
+          }).toArray((err, result) => {
             assertNoError(err);
             should.exist(result);
             result[0].publicKey.sysStatus.should.equal(
@@ -291,8 +293,28 @@ describe('bedrock-key API: addPublicKey', () => {
             result[0].publicKey.type.should.equal(samplePublicKey.type);
             result[0].publicKey.id.should.equal(samplePublicKey.id);
             callback();
-          });
-        }]
+          })]
+      }, done);
+    });
+
+    it('return DuplicateError on key with a duplicate `id`', done => {
+      const {publicKeyPem} = mockData.goodKeyPair;
+      const {id: owner} = actor;
+      const samplePublicKey = {
+        id: `https://non.default.id/${uuid()}`,
+        owner,
+        publicKeyPem,
+      };
+
+      async.auto({
+        insert: callback =>
+          brKey.addPublicKey(actor, samplePublicKey, callback),
+        insertAgain: ['insert', (results, callback) =>
+          brKey.addPublicKey(actor, samplePublicKey, err => {
+            should.exist(err);
+            err.name.should.equal('DuplicateError');
+            callback();
+          })],
       }, done);
     });
 
@@ -315,13 +337,13 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.owner = actor.id;
 
       async.auto({
-        insert: (callback) => {
+        insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
         test: ['insert', (results, callback) => {
           database.collections.publicKey.find({
             'publicKey.owner': actor.id
-          }).toArray(function(err, result) {
+          }).toArray((err, result) => {
             assertNoError(err);
             should.exist(result);
             result[0].publicKey.publicKeyPem.should.equal(
@@ -339,13 +361,13 @@ describe('bedrock-key API: addPublicKey', () => {
       samplePublicKey.owner = actor.id + 1;
 
       async.auto({
-        insert: (callback) => {
+        insert: callback => {
           brKey.addPublicKey(actor, samplePublicKey, callback);
         },
         test: ['insert', (results, callback) => {
           database.collections.publicKey.find({
             'publicKey.owner': samplePublicKey.owner
-          }).toArray(function(err, result) {
+          }).toArray((err, result) => {
             assertNoError(err);
             should.exist(result);
             result[0].publicKey.publicKeyPem.should.equal(

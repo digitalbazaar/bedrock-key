@@ -139,7 +139,7 @@ describe('bedrock-key API: getPublicKey', () => {
         },
         test: ['insert', (results, callback) => {
           queryPublicKey.id = 'https://not-found';
-          brKey.getPublicKey(queryPublicKey, actor, function(err, result) {
+          brKey.getPublicKey(queryPublicKey, actor, (err, result) => {
             should.exist(err);
             should.not.exist(result);
             err.name.should.equal('NotFound');

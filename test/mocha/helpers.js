@@ -7,7 +7,7 @@
 const async = require('async');
 const brIdentity = require('bedrock-identity');
 const database = require('bedrock-mongodb');
-const uuid = require('uuid').v4;
+const uuid = require('uuid/v4');
 
 const api = {};
 module.exports = api;
