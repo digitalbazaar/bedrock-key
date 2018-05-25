@@ -31,39 +31,36 @@ describe('bedrock-key API: revokePublicKey', () => {
       const originalPublicKey = {};
       let queryPublicKey;
       let revPublicKey;
-      let orig;
-      let final;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.owner = actor.id;
       originalPublicKey.label = 'Key 00';
 
       async.auto({
-        insert: callback => {
-          brKey.addPublicKey(actor, originalPublicKey, callback);
-        },
-        readOrig: ['insert', (results, callback) => {
+        insert: callback =>
+          brKey.addPublicKey(actor, originalPublicKey, callback),
+        orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        revoke: ['readOrig', (results, callback) => {
+        revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
-        readRev: ['revoke', (results, callback) => {
-          brKey.getPublicKey(queryPublicKey, actor, callback);
-        }],
-        test: ['readRev', (results, callback) => {
-          orig = results.readOrig[0];
-          final = results.readRev[0];
-          orig.sysStatus.should.equal('active');
-          final.sysStatus.should.equal('disabled');
-          orig.publicKeyPem.should.equal(
+        final: ['revoke', (results, callback) =>
+          brKey.getPublicKey(queryPublicKey, actor, callback)],
+        test: ['final', (results, callback) => {
+          const {orig, final} = results;
+          const {publicKey: origPublicKey} = orig;
+          const {publicKey: finalPublicKey} = final;
+          origPublicKey.sysStatus.should.equal('active');
+          finalPublicKey.sysStatus.should.equal('disabled');
+          origPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          final.publicKeyPem.should.equal(
+          finalPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          should.not.exist(orig.revoked);
-          should.exist(final.revoked);
+          should.not.exist(origPublicKey.revoked);
+          should.exist(finalPublicKey.revoked);
           callback();
         }]
       }, done);
@@ -73,8 +70,6 @@ describe('bedrock-key API: revokePublicKey', () => {
       const originalPublicKey = {};
       const queryPublicKey = {};
       let revPublicKey;
-      let orig;
-      let final;
       const privateKey = {};
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
@@ -86,36 +81,38 @@ describe('bedrock-key API: revokePublicKey', () => {
         insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
         },
-        readOrig: ['insert', (results, callback) => {
+        orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        revoke: ['readOrig', (results, callback) => {
+        revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
-        readRev: ['revoke', (results, callback) => {
+        final: ['revoke', (results, callback) => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        test: ['readRev', (results, callback) => {
-          orig = results.readOrig;
-          final = results.readRev;
-          orig[0].sysStatus.should.equal('active');
-          final[0].sysStatus.should.equal('disabled');
-          orig[0].publicKeyPem.should.equal(
+        test: ['final', (results, callback) => {
+          const {orig, final} = results;
+          const {publicKey: origPublicKey, privateKey: origPrivateKey} = orig;
+          const {publicKey: finalPublicKey, privateKey: finalPrivateKey} =
+            final;
+          origPublicKey.sysStatus.should.equal('active');
+          finalPublicKey.sysStatus.should.equal('disabled');
+          origPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          final[0].publicKeyPem.should.equal(
+          finalPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          should.not.exist(orig[0].revoked);
-          should.exist(final[0].revoked);
-          should.not.exist(orig[2].sysStatus);
-          final[2].sysStatus.should.equal('disabled');
-          orig[2].privateKeyPem.should.equal(
+          should.not.exist(origPublicKey.revoked);
+          should.exist(finalPublicKey.revoked);
+          should.not.exist(origPrivateKey.sysStatus);
+          finalPrivateKey.sysStatus.should.equal('disabled');
+          origPrivateKey.privateKeyPem.should.equal(
             privateKey.privateKeyPem);
-          final[2].privateKeyPem.should.equal(
+          finalPrivateKey.privateKeyPem.should.equal(
             privateKey.privateKeyPem);
-          should.not.exist(orig[2].revoked);
-          should.exist(final[2].revoked);
+          should.not.exist(origPrivateKey.revoked);
+          should.exist(finalPrivateKey.revoked);
           callback();
         }]
       }, done);
@@ -178,8 +175,6 @@ describe('bedrock-key API: revokePublicKey', () => {
       const originalPublicKey = {};
       const queryPublicKey = {};
       let revPublicKey;
-      let orig;
-      let final;
       const privateKey = {};
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
@@ -191,36 +186,38 @@ describe('bedrock-key API: revokePublicKey', () => {
         insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
         },
-        readOrig: ['insert', (results, callback) => {
+        orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        revoke: ['readOrig', (results, callback) => {
+        revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
-        readRev: ['revoke', (results, callback) => {
+        final: ['revoke', (results, callback) => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        test: ['readRev', (results, callback) => {
-          orig = results.readOrig;
-          final = results.readRev;
-          orig[0].sysStatus.should.equal('active');
-          final[0].sysStatus.should.equal('disabled');
-          orig[0].publicKeyPem.should.equal(
+        test: ['final', (results, callback) => {
+          const {orig, final} = results;
+          const {publicKey: origPublicKey, privateKey: origPrivateKey} = orig;
+          const {publicKey: finalPublicKey, privateKey: finalPrivateKey} =
+            final;
+          origPublicKey.sysStatus.should.equal('active');
+          finalPublicKey.sysStatus.should.equal('disabled');
+          origPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          final[0].publicKeyPem.should.equal(
+          finalPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          should.not.exist(orig[0].revoked);
-          should.exist(final[0].revoked);
-          should.not.exist(orig[2].sysStatus);
-          final[2].sysStatus.should.equal('disabled');
-          orig[2].privateKeyPem.should.equal(
+          should.not.exist(origPublicKey.revoked);
+          should.exist(finalPublicKey.revoked);
+          should.not.exist(origPrivateKey.sysStatus);
+          finalPrivateKey.sysStatus.should.equal('disabled');
+          origPrivateKey.privateKeyPem.should.equal(
             privateKey.privateKeyPem);
-          final[2].privateKeyPem.should.equal(
+          finalPrivateKey.privateKeyPem.should.equal(
             privateKey.privateKeyPem);
-          should.not.exist(orig[2].revoked);
-          should.exist(final[2].revoked);
+          should.not.exist(origPrivateKey.revoked);
+          should.exist(finalPrivateKey.revoked);
           callback();
         }]
       }, done);
@@ -230,8 +227,6 @@ describe('bedrock-key API: revokePublicKey', () => {
       const originalPublicKey = {};
       const queryPublicKey = {};
       let revPublicKey;
-      let orig;
-      let final;
       const privateKey = {};
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
@@ -243,36 +238,38 @@ describe('bedrock-key API: revokePublicKey', () => {
         insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, privateKey, callback);
         },
-        readOrig: ['insert', (results, callback) => {
+        orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        revoke: ['readOrig', (results, callback) => {
+        revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
-        readRev: ['revoke', (results, callback) => {
+        final: ['revoke', (results, callback) => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        test: ['readRev', (results, callback) => {
-          orig = results.readOrig;
-          final = results.readRev;
-          orig[0].sysStatus.should.equal('active');
-          final[0].sysStatus.should.equal('disabled');
-          orig[0].publicKeyPem.should.equal(
+        test: ['final', (results, callback) => {
+          const {orig, final} = results;
+          const {publicKey: origPublicKey, privateKey: origPrivateKey} = orig;
+          const {publicKey: finalPublicKey, privateKey: finalPrivateKey} =
+            final;
+          origPublicKey.sysStatus.should.equal('active');
+          finalPublicKey.sysStatus.should.equal('disabled');
+          origPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          final[0].publicKeyPem.should.equal(
+          finalPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          should.not.exist(orig[0].revoked);
-          should.exist(final[0].revoked);
-          should.not.exist(orig[2].sysStatus);
-          final[2].sysStatus.should.equal('disabled');
-          orig[2].privateKeyPem.should.equal(
+          should.not.exist(origPublicKey.revoked);
+          should.exist(finalPublicKey.revoked);
+          should.not.exist(origPrivateKey.sysStatus);
+          finalPrivateKey.sysStatus.should.equal('disabled');
+          origPrivateKey.privateKeyPem.should.equal(
             privateKey.privateKeyPem);
-          final[2].privateKeyPem.should.equal(
+          finalPrivateKey.privateKeyPem.should.equal(
             privateKey.privateKeyPem);
-          should.not.exist(orig[2].revoked);
-          should.exist(final[2].revoked);
+          should.not.exist(origPrivateKey.revoked);
+          should.exist(finalPrivateKey.revoked);
           callback();
         }]
       }, done);

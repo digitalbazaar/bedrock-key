@@ -44,7 +44,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
         update: ['orig', (results, callback) => {
-          newPublicKey = brUtil.clone(results.orig[0]);
+          newPublicKey = brUtil.clone(results.orig.publicKey);
           newPublicKey.label = 'Key 01';
           newPublicKey.publicKeyPem = 'bogusPublicKey';
           newPublicKey.sysStatus = 'bogusStatus';
@@ -54,13 +54,15 @@ describe('bedrock-key API: updatePublicKey', () => {
           queryPublicKey, actor, callback)],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
-          orig[0].label.should.equal(originalPublicKey.label);
-          final[0].label.should.equal(newPublicKey.label);
-          orig[0].publicKeyPem.should.equal(publicKeyPem);
-          final[0].publicKeyPem.should.equal(publicKeyPem);
-          orig[0].owner.should.equal(owner);
-          final[0].owner.should.equal(owner);
-          orig[0].sysStatus.should.equal(final[0].sysStatus);
+          const {publicKey: origPublicKey} = orig;
+          const {publicKey: finalPublicKey} = final;
+          origPublicKey.label.should.equal(originalPublicKey.label);
+          finalPublicKey.label.should.equal(newPublicKey.label);
+          origPublicKey.publicKeyPem.should.equal(publicKeyPem);
+          finalPublicKey.publicKeyPem.should.equal(publicKeyPem);
+          origPublicKey.owner.should.equal(owner);
+          finalPublicKey.owner.should.equal(owner);
+          origPublicKey.sysStatus.should.equal(finalPublicKey.sysStatus);
           callback();
         }]
       }, done);
@@ -82,7 +84,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
         update: ['orig', (results, callback) => {
-          newPublicKey = brUtil.clone(results.orig[0]);
+          newPublicKey = brUtil.clone(results.orig.publicKey);
           newPublicKey.label = 'Key 01';
           newPublicKey.publicKeyPem = 'bogusPublicKey';
           newPublicKey.sysStatus = 'bogusStatus';
@@ -92,13 +94,15 @@ describe('bedrock-key API: updatePublicKey', () => {
           queryPublicKey, actor, callback)],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
-          orig[0].label.should.equal(originalPublicKey.label);
-          final[0].label.should.equal(newPublicKey.label);
-          orig[0].publicKeyBase58.should.equal(publicKeyBase58);
-          final[0].publicKeyBase58.should.equal(publicKeyBase58);
-          orig[0].owner.should.equal(owner);
-          final[0].owner.should.equal(owner);
-          orig[0].sysStatus.should.equal(final[0].sysStatus);
+          const {publicKey: origPublicKey} = orig;
+          const {publicKey: finalPublicKey} = final;
+          origPublicKey.label.should.equal(originalPublicKey.label);
+          finalPublicKey.label.should.equal(newPublicKey.label);
+          origPublicKey.publicKeyBase58.should.equal(publicKeyBase58);
+          finalPublicKey.publicKeyBase58.should.equal(publicKeyBase58);
+          origPublicKey.owner.should.equal(owner);
+          finalPublicKey.owner.should.equal(owner);
+          origPublicKey.sysStatus.should.equal(finalPublicKey.sysStatus);
           callback();
         }]
       }, done);
@@ -161,10 +165,10 @@ describe('bedrock-key API: updatePublicKey', () => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
         test: ['readUpdate', (results, callback) => {
-          final = results.readUpdate;
-          final[0].publicKeyPem.should.equal(originalPublicKey.publicKeyPem);
-          final[0].label.should.equal(originalPublicKey.label);
-          final[0].owner.should.equal(actor.id);
+          final = results.readUpdate.publicKey;
+          final.publicKeyPem.should.equal(originalPublicKey.publicKeyPem);
+          final.label.should.equal(originalPublicKey.label);
+          final.owner.should.equal(actor.id);
           callback();
         }]
       }, done);
@@ -197,32 +201,33 @@ describe('bedrock-key API: updatePublicKey', () => {
         insert: callback => {
           brKey.addPublicKey(actor, originalPublicKey, callback);
         },
-        readOrig: ['insert', (results, callback) => {
+        orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        update: ['readOrig', (results, callback) => {
-          newPublicKey = brUtil.clone(results.readOrig[0]);
+        update: ['orig', (results, callback) => {
+          newPublicKey = brUtil.clone(results.orig.publicKey);
           newPublicKey.label = 'Key 01';
           newPublicKey.publicKeyPem = 'bogusPublicKey';
           newPublicKey.sysStatus = 'bogusStatus';
           brKey.updatePublicKey(actor, newPublicKey, callback);
         }],
-        readUpdate: ['update', (results, callback) => {
+        final: ['update', (results, callback) => {
           brKey.getPublicKey(queryPublicKey, actor, callback);
         }],
-        test: ['readUpdate', (results, callback) => {
-          orig = results.readOrig;
-          final = results.readUpdate;
-          orig[0].label.should.equal(originalPublicKey.label);
-          final[0].label.should.equal(newPublicKey.label);
-          orig[0].publicKeyPem.should.equal(
+        test: ['final', (results, callback) => {
+          const {orig, final} = results;
+          const {publicKey: origPublicKey} = orig;
+          const {publicKey: finalPublicKey} = final;
+          origPublicKey.label.should.equal(originalPublicKey.label);
+          finalPublicKey.label.should.equal(newPublicKey.label);
+          origPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          final[0].publicKeyPem.should.equal(
+          finalPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          orig[0].owner.should.equal(actor.id);
-          final[0].owner.should.equal(actor.id);
-          orig[0].sysStatus.should.equal(final[0].sysStatus);
+          origPublicKey.owner.should.equal(actor.id);
+          finalPublicKey.owner.should.equal(actor.id);
+          origPublicKey.sysStatus.should.equal(finalPublicKey.sysStatus);
           callback();
         }]
       }, done);
