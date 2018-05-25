@@ -37,14 +37,14 @@ describe('bedrock-key API: revokePublicKey', () => {
           {actor, publicKey: originalPublicKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
-        final: ['revoke', (results, callback) =>
-          brKey.getPublicKey(queryPublicKey, actor, callback)],
+        final: ['revoke', (results, callback) => brKey.getPublicKey(
+          {actor, publicKey: queryPublicKey}, callback)],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
           const {publicKey: origPublicKey} = orig;
@@ -78,15 +78,14 @@ describe('bedrock-key API: revokePublicKey', () => {
           {actor, publicKey: originalPublicKey, privateKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
-        final: ['revoke', (results, callback) => {
-          brKey.getPublicKey(queryPublicKey, actor, callback);
-        }],
+        final: ['revoke', (results, callback) => brKey.getPublicKey(
+          {actor, publicKey: queryPublicKey}, callback)],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
           const {publicKey: origPublicKey, privateKey: origPrivateKey} = orig;
@@ -181,15 +180,14 @@ describe('bedrock-key API: revokePublicKey', () => {
           {actor, publicKey: originalPublicKey, privateKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
-        final: ['revoke', (results, callback) => {
-          brKey.getPublicKey(queryPublicKey, actor, callback);
-        }],
+        final: ['revoke', (results, callback) => brKey.getPublicKey(
+          {actor, publicKey: queryPublicKey}, callback)],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
           const {publicKey: origPublicKey, privateKey: origPrivateKey} = orig;
@@ -232,15 +230,14 @@ describe('bedrock-key API: revokePublicKey', () => {
           {actor, publicKey: originalPublicKey, privateKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey.id = originalPublicKey.id;
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         revoke: ['orig', (results, callback) => {
           revPublicKey = originalPublicKey.id;
           brKey.revokePublicKey(actor, revPublicKey, callback);
         }],
-        final: ['revoke', (results, callback) => {
-          brKey.getPublicKey(queryPublicKey, actor, callback);
-        }],
+        final: ['revoke', (results, callback) => brKey.getPublicKey(
+          {actor, publicKey: queryPublicKey}, callback)],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
           const {publicKey: origPublicKey, privateKey: origPrivateKey} = orig;

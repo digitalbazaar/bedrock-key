@@ -41,7 +41,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               result.should.be.an('object');
@@ -65,7 +65,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           const queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               result.should.be.an('object');
@@ -94,7 +94,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               const {publicKey} = result;
@@ -121,7 +121,7 @@ describe('bedrock-key API: getPublicKey', () => {
           queryPublicKey.owner = samplePublicKey.owner;
           queryPublicKey.publicKeyPem = samplePublicKey.publicKeyPem;
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               const {publicKey} = result;
@@ -145,12 +145,13 @@ describe('bedrock-key API: getPublicKey', () => {
         },
         test: ['insert', (results, callback) => {
           queryPublicKey.id = 'https://not-found';
-          brKey.getPublicKey(queryPublicKey, actor, (err, result) => {
-            should.exist(err);
-            should.not.exist(result);
-            err.name.should.equal('NotFound');
-            callback();
-          });
+          brKey.getPublicKey(
+            {actor, publicKey: queryPublicKey}, (err, result) => {
+              should.exist(err);
+              should.not.exist(result);
+              err.name.should.equal('NotFound');
+              callback();
+            });
         }]
       }, done);
     });
@@ -169,7 +170,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           const queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               const {publicKey, privateKey} = result;
@@ -196,7 +197,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           const queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               const {publicKey, privateKey} = result;
@@ -234,7 +235,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               result.should.be.an('object');
@@ -260,7 +261,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               result.should.be.an('object');
@@ -302,7 +303,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               result.should.be.an('object');
@@ -334,16 +335,17 @@ describe('bedrock-key API: getPublicKey', () => {
         }, callback),
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
-          brKey.getPublicKey(queryPublicKey, actor, (err, result) => {
-            assertNoError(err);
-            should.exist(result);
-            result.should.be.an('object');
-            const {publicKey, privateKey} = result;
-            publicKey.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
-            should.not.exist(publicKey.privateKey);
-            should.not.exist(privateKey);
-            callback();
-          });
+          brKey.getPublicKey(
+            {actor, publicKey: queryPublicKey}, (err, result) => {
+              assertNoError(err);
+              should.exist(result);
+              result.should.be.an('object');
+              const {publicKey, privateKey} = result;
+              publicKey.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
+              should.not.exist(publicKey.privateKey);
+              should.not.exist(privateKey);
+              callback();
+            });
         }]
       }, done);
     });
@@ -373,7 +375,7 @@ describe('bedrock-key API: getPublicKey', () => {
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
           brKey.getPublicKey(
-            queryPublicKey, actor, (err, result) => {
+            {actor, publicKey: queryPublicKey}, (err, result) => {
               assertNoError(err);
               should.exist(result);
               result.should.be.an('object');
@@ -409,32 +411,30 @@ describe('bedrock-key API: getPublicKey', () => {
         }, callback),
         test: ['insert', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
-          brKey.getPublicKey(
-            queryPublicKey, (err, result) => {
-              assertNoError(err);
-              should.exist(result);
-              result.should.be.an('object');
-              const {publicKey, privateKey} = result;
-              publicKey.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
-              should.not.exist(publicKey.privateKey);
-              should.not.exist(privateKey);
-              callback();
-            });
+          brKey.getPublicKey({publicKey: queryPublicKey}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.be.an('object');
+            const {publicKey, privateKey} = result;
+            publicKey.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
+            should.not.exist(publicKey.privateKey);
+            should.not.exist(privateKey);
+            callback();
+          });
         }],
         // second test should pass with/without cache enabled
         test2: ['test', (results, callback) => {
           queryPublicKey = {id: samplePublicKey.id};
-          brKey.getPublicKey(
-            queryPublicKey, (err, result) => {
-              assertNoError(err);
-              should.exist(result);
-              result.should.be.an('object');
-              const {publicKey, privateKey} = result;
-              publicKey.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
-              should.not.exist(publicKey.privateKey);
-              should.not.exist(privateKey);
-              callback();
-            });
+          brKey.getPublicKey({publicKey: queryPublicKey}, (err, result) => {
+            assertNoError(err);
+            should.exist(result);
+            result.should.be.an('object');
+            const {publicKey, privateKey} = result;
+            publicKey.publicKeyPem.should.equal(samplePublicKey.publicKeyPem);
+            should.not.exist(publicKey.privateKey);
+            should.not.exist(privateKey);
+            callback();
+          });
         }]
       }, done);
     });

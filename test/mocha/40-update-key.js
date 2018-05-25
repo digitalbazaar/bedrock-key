@@ -41,7 +41,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           {actor, publicKey: originalPublicKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         update: ['orig', (results, callback) => {
           newPublicKey = brUtil.clone(results.orig.publicKey);
@@ -51,7 +51,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           brKey.updatePublicKey(actor, newPublicKey, callback);
         }],
         final: ['update', (results, callback) => brKey.getPublicKey(
-          queryPublicKey, actor, callback)],
+          {actor, publicKey: queryPublicKey}, callback)],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
           const {publicKey: origPublicKey} = orig;
@@ -81,7 +81,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           {actor, publicKey: originalPublicKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         update: ['orig', (results, callback) => {
           newPublicKey = brUtil.clone(results.orig.publicKey);
@@ -91,7 +91,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           brKey.updatePublicKey(actor, newPublicKey, callback);
         }],
         final: ['update', (results, callback) => brKey.getPublicKey(
-          queryPublicKey, actor, callback)],
+          {actor, publicKey: queryPublicKey}, callback)],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
           const {publicKey: origPublicKey} = orig;
@@ -161,7 +161,7 @@ describe('bedrock-key API: updatePublicKey', () => {
         }],
         readUpdate: ['update', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         test: ['readUpdate', (results, callback) => {
           final = results.readUpdate.publicKey;
@@ -199,7 +199,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           {actor, publicKey: originalPublicKey}, callback),
         orig: ['insert', (results, callback) => {
           queryPublicKey = {id: originalPublicKey.id};
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         update: ['orig', (results, callback) => {
           newPublicKey = brUtil.clone(results.orig.publicKey);
@@ -209,7 +209,7 @@ describe('bedrock-key API: updatePublicKey', () => {
           brKey.updatePublicKey(actor, newPublicKey, callback);
         }],
         final: ['update', (results, callback) => {
-          brKey.getPublicKey(queryPublicKey, actor, callback);
+          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
         }],
         test: ['final', (results, callback) => {
           const {orig, final} = results;
