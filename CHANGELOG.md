@@ -13,6 +13,7 @@
   `id` instead of a `MongoError`.
 - **Breaking** The `getPublicKey` API now returns an object as its second
   argument. This is in support of implementing a Promise API in the future.
+- **Breaking** Update all APIs to use named parameters.  
 
 # 4.1.0 - 2018-02-24
 
