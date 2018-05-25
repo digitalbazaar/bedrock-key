@@ -7,7 +7,8 @@
 
 ### Changed
 - **Breaking** Change the compound index on `owner` and `pem` to a partial
-  index. This is in support of storing keys that are not in PEM format.
+  non-unique index. This is in support of storing keys that are not in PEM
+  format.
 
 # 4.1.0 - 2018-02-24
 
