@@ -89,7 +89,7 @@ describe('bedrock-key API: addPublicKey', () => {
         brKey.addPublicKey(
           {actor, publicKey: samplePublicKey, privateKey}, err => {
             should.exist(err);
-            err.name.should.equal('InvalidKeyPair');
+            err.name.should.equal('SyntaxError');
             done();
           });
       });
@@ -151,7 +151,7 @@ describe('bedrock-key API: addPublicKey', () => {
           {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
           err => {
             should.exist(err);
-            err.name.should.equal('InvalidKeyPair');
+            err.name.should.equal('InvalidStateError');
             err.message.should.contain('Key pair does not match');
             done();
           });
@@ -168,7 +168,7 @@ describe('bedrock-key API: addPublicKey', () => {
           {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
           err => {
             should.exist(err);
-            err.name.should.equal('InvalidPublicKey');
+            err.name.should.equal('SyntaxError');
             err.cause.message.should.contain('Non-base58 character');
             done();
           });
@@ -185,7 +185,7 @@ describe('bedrock-key API: addPublicKey', () => {
           {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
           err => {
             should.exist(err);
-            err.name.should.equal('InvalidPublicKey');
+            err.name.should.equal('SyntaxError');
             err.cause.message.should.contain(
               '`publicKeyBase58` is not the correct length.');
             done();
@@ -203,7 +203,7 @@ describe('bedrock-key API: addPublicKey', () => {
           {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
           err => {
             should.exist(err);
-            err.name.should.equal('InvalidPrivateKey');
+            err.name.should.equal('SyntaxError');
             err.cause.message.should.contain('Non-base58 character');
             done();
           });
@@ -220,7 +220,7 @@ describe('bedrock-key API: addPublicKey', () => {
           {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
           err => {
             should.exist(err);
-            err.name.should.equal('InvalidPrivateKey');
+            err.name.should.equal('SyntaxError');
             err.cause.message.should.contain(
               '`privateKeyBase58` is not the correct length.');
             done();

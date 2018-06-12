@@ -41,7 +41,7 @@ describe('bedrock-key API sub-functions', () => {
       const privateKey = {privateKeyPem};
       brKey.checkKeyPair({privateKey, publicKey}, err => {
         should.exist(err);
-        err.name.should.equal('InvalidKeyPair');
+        err.name.should.equal('SyntaxError');
         done();
       });
     });
@@ -52,7 +52,7 @@ describe('bedrock-key API sub-functions', () => {
       const privateKey = {privateKeyPem};
       brKey.checkKeyPair({privateKey, publicKey}, err => {
         should.exist(err);
-        err.name.should.equal('InvalidPublicKey');
+        err.name.should.equal('SyntaxError');
         done();
       });
     });
@@ -63,7 +63,7 @@ describe('bedrock-key API sub-functions', () => {
       const privateKey = {privateKeyPem};
       brKey.checkKeyPair({privateKey, publicKey}, err => {
         should.exist(err);
-        err.name.should.equal('InvalidPrivateKey');
+        err.name.should.equal('SyntaxError');
         done();
       });
     });
