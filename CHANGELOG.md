@@ -1,6 +1,6 @@
 # bedrock-key ChangeLog
 
-# 5.0.0 - TBD
+# 5.0.0 - 2018-06-14
 
 ### Added
 - Support Ed25519 keys.
