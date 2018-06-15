@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
@@ -10,21 +10,19 @@ const brIdentity = require('bedrock-identity');
 const helpers = require('./helpers');
 
 describe('bedrock-key API: getPublicKey', () => {
-  before(done => {
-    helpers.prepareDatabase(mockData, done);
+  before(async () => {
+    await helpers.prepareDatabase(mockData);
   });
-  beforeEach(function(done) {
-    helpers.removeCollection('publicKey', done);
+  beforeEach(async () => {
+    await helpers.removeCollection('publicKey');
   });
 
   describe('authenticated as regularUser', () => {
     const mockIdentity = mockData.identities.regularUser;
+    const keyOwner = mockIdentity.identity;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
 
     it('should return a valid public key for an actor w/ id', done => {
@@ -32,7 +30,7 @@ describe('bedrock-key API: getPublicKey', () => {
       let queryPublicKey;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
+      samplePublicKey.owner = keyOwner.id;
 
       async.auto({
         insert: callback => {
@@ -55,7 +53,7 @@ describe('bedrock-key API: getPublicKey', () => {
     });
     it('should return a valid Ed25519 public key for an actor w/ id', done => {
       const {publicKeyBase58} = mockData.goodKeyPairEd25519;
-      const {id: owner} = actor;
+      const {id: owner} = keyOwner;
       const samplePublicKey = {publicKeyBase58, owner};
 
       async.auto({
@@ -111,7 +109,7 @@ describe('bedrock-key API: getPublicKey', () => {
       const queryPublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
+      samplePublicKey.owner = keyOwner.id;
 
       async.auto({
         insert: callback => {
@@ -137,7 +135,7 @@ describe('bedrock-key API: getPublicKey', () => {
       const queryPublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
+      samplePublicKey.owner = keyOwner.id;
 
       async.auto({
         insert: callback => {
@@ -161,7 +159,7 @@ describe('bedrock-key API: getPublicKey', () => {
       const samplePublicKey = {publicKeyPem};
       const samplePrivateKey = {privateKeyPem};
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
+      samplePublicKey.owner = keyOwner.id;
 
       async.auto({
         insert: callback => brKey.addPublicKey(
@@ -186,7 +184,7 @@ describe('bedrock-key API: getPublicKey', () => {
 
     it('should properly return a Ed25519 private key', done => {
       const {publicKeyBase58, privateKeyBase58} = mockData.goodKeyPairEd25519;
-      const {id: owner} = actor;
+      const {id: owner} = keyOwner;
       const samplePublicKey = {owner, publicKeyBase58};
       const samplePrivateKey = {privateKeyBase58};
 
@@ -214,12 +212,10 @@ describe('bedrock-key API: getPublicKey', () => {
 
   describe('authenticated as adminUser', () => {
     const mockIdentity = mockData.identities.adminUser;
+    const keyOwner = mockIdentity.identity;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
 
     it('should return a valid public key for an actor w/ id', done => {
@@ -227,7 +223,7 @@ describe('bedrock-key API: getPublicKey', () => {
       let queryPublicKey;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
+      samplePublicKey.owner = keyOwner.id;
 
       async.auto({
         insert: callback => brKey.addPublicKey(
@@ -253,7 +249,7 @@ describe('bedrock-key API: getPublicKey', () => {
       let queryPublicKey;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id + 1;
+      samplePublicKey.owner = keyOwner.id + 1;
 
       async.auto({
         insert: callback => brKey.addPublicKey(
@@ -279,11 +275,8 @@ describe('bedrock-key API: getPublicKey', () => {
   describe('authenticated without permission to get keys', () => {
     const mockIdentity = mockData.identities.noPermissionUser;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
 
     it('should return public key for actor w/o permissions', done => {
@@ -292,10 +285,10 @@ describe('bedrock-key API: getPublicKey', () => {
 
       // create second identity for second public key
       const mockIdentity2 = mockData.identities.regularUser;
-      const secondActor = mockIdentity2.identity;
+      const secondOwner = mockIdentity2.identity;
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = secondActor.id;
+      samplePublicKey.owner = secondOwner.id;
 
       async.auto({
         insert: callback => brKey.addPublicKey(
@@ -322,11 +315,11 @@ describe('bedrock-key API: getPublicKey', () => {
 
       // create second identity for second public key
       const mockIdentity2 = mockData.identities.regularUser;
-      const secondActor = mockIdentity2.identity;
+      const secondOwner = mockIdentity2.identity;
       const samplePrivateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = secondActor.id;
+      samplePublicKey.owner = secondOwner.id;
       samplePrivateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
@@ -361,11 +354,11 @@ describe('bedrock-key API: getPublicKey', () => {
 
       // create second identity to insert public key
       const mockIdentity = mockData.identities.regularUser;
-      const secondActor = mockIdentity.identity;
+      const secondOwner = mockIdentity.identity;
       const samplePrivateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = secondActor.id;
+      samplePublicKey.owner = secondOwner.id;
       samplePrivateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({
@@ -398,11 +391,11 @@ describe('bedrock-key API: getPublicKey', () => {
 
       // create second identity to insert public key
       const mockIdentity = mockData.identities.regularUser;
-      const secondActor = mockIdentity.identity;
+      const secondOwner = mockIdentity.identity;
       const samplePrivateKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = secondActor.id;
+      samplePublicKey.owner = secondOwner.id;
       samplePrivateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
       async.auto({

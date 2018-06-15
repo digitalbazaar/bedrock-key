@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2018 Digital Bazaar, Inc. All rights reserved.
  */
-
 'use strict';
 
 const helpers = require('./helpers');
@@ -16,27 +15,33 @@ let userName;
 userName = 'regularUser';
 identities[userName] = {};
 identities[userName].identity = helpers.createIdentity(userName);
-identities[userName].identity.sysResourceRole.push({
-  sysRole: 'bedrock-key.test',
-  generateResource: 'id'
-});
+identities[userName].meta = {
+  sysResourceRole: [{
+    sysRole: 'bedrock-key.test',
+    generateResource: 'id'
+  }]
+};
 
 // identity with permission to add public keys
 userName = 'regularUser2';
 identities[userName] = {};
 identities[userName].identity = helpers.createIdentity(userName);
-identities[userName].identity.sysResourceRole.push({
-  sysRole: 'bedrock-key.test',
-  generateResource: 'id'
-});
+identities[userName].meta = {
+  sysResourceRole: [{
+    sysRole: 'bedrock-key.test',
+    generateResource: 'id'
+  }]
+};
 
 // identity with permission to access all public keys (Admin)
 userName = 'adminUser';
 identities[userName] = {};
 identities[userName].identity = helpers.createIdentity(userName);
-identities[userName].identity.sysResourceRole.push({
-  sysRole: 'bedrock-key.test'
-});
+identities[userName].meta = {
+  sysResourceRole: [{
+    sysRole: 'bedrock-key.test'
+  }]
+};
 
 // identity with no permissions
 userName = 'noPermissionUser';

@@ -1,5 +1,8 @@
 # bedrock-key ChangeLog
 
+### Added
+- Add promise-based API.
+
 # 5.0.0 - 2018-06-14
 
 ### Added

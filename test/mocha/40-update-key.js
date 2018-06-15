@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
@@ -11,28 +11,26 @@ const helpers = require('./helpers');
 const brUtil = require('bedrock').util;
 
 describe('bedrock-key API: updatePublicKey', () => {
-  before(done => {
-    helpers.prepareDatabase(mockData, done);
+  before(async () => {
+    await helpers.prepareDatabase(mockData);
   });
-  beforeEach(function(done) {
-    helpers.removeCollection('publicKey', done);
+  beforeEach(async () => {
+    await helpers.removeCollection('publicKey');
   });
 
   describe('authenticated as regularUser', () => {
     const mockIdentity = mockData.identities.regularUser;
+    const keyOwner = mockIdentity.identity;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
 
     it('should update a RSA key, excluding restricted fields', done => {
       let newPublicKey = {};
       let queryPublicKey;
       const {publicKeyPem} = mockData.goodKeyPair;
-      const {id: owner} = actor;
+      const {id: owner} = keyOwner;
       const label = 'Key 00';
       const originalPublicKey = {label, publicKeyPem, owner};
 
@@ -72,7 +70,7 @@ describe('bedrock-key API: updatePublicKey', () => {
       let newPublicKey = {};
       let queryPublicKey;
       const {publicKeyBase58} = mockData.goodKeyPairEd25519;
-      const {id: owner} = actor;
+      const {id: owner} = keyOwner;
       const label = 'Key 00';
       const originalPublicKey = {label, publicKeyBase58, owner};
 
@@ -110,9 +108,8 @@ describe('bedrock-key API: updatePublicKey', () => {
 
     it('should return error if key is not found', done => {
       const newPublicKey = {};
-
       newPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      newPublicKey.owner = actor.id;
+      newPublicKey.owner = keyOwner.id;
       newPublicKey.label = 'Key 00';
       newPublicKey.id = 'https://bedrock.dev:18443/keys/1';
 
@@ -121,69 +118,61 @@ describe('bedrock-key API: updatePublicKey', () => {
         err.name.should.equal('NotFoundError');
         err.message.should.equal(
           'Could not update public key. Public key not found.');
+        done();
       });
-      done();
     });
 
-    it('should not update key if not key owner', done => {
-      const originalPublicKey = {};
-      const newPublicKey = {};
-      let secondActor;
-      let queryPublicKey;
-      let final;
+    it('should not update key if not key owner', async () => {
       const mockIdentity2 = mockData.identities.regularUser2;
+      const secondActor = await brIdentity.getCapabilities(
+        {id: mockIdentity2.identity.id});
 
-      originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      originalPublicKey.owner = actor.id;
-      originalPublicKey.label = 'Key 00';
-      newPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      newPublicKey.label = 'Key 01 Foo';
+      const originalPublicKey = {
+        publicKeyPem: mockData.goodKeyPair.publicKeyPem,
+        owner: keyOwner.id,
+        label: 'Key 00'
+      };
 
-      async.auto({
-        setup: callback => {
-          // set up second identity with permissions
-          brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
-            secondActor = result;
-            callback(err, result);
-          });
-        },
-        insert: ['setup', (results, callback) => brKey.addPublicKey(
-          {actor, publicKey: originalPublicKey}, callback)],
-        update: ['insert', (results, callback) => {
-          newPublicKey.id = originalPublicKey.id;
-          // Unsanitized publicKey owner should be deleted before API call
-          delete newPublicKey.owner;
-          brKey.updatePublicKey(
-            {actor: secondActor, publicKey: newPublicKey}, err => {
-              should.exist(err);
-              err.name.should.equal('PermissionDenied');
-              callback();
-            });
-        }],
-        readUpdate: ['update', (results, callback) => {
-          queryPublicKey = {id: originalPublicKey.id};
-          brKey.getPublicKey({actor, publicKey: queryPublicKey}, callback);
-        }],
-        test: ['readUpdate', (results, callback) => {
-          final = results.readUpdate.publicKey;
-          final.publicKeyPem.should.equal(originalPublicKey.publicKeyPem);
-          final.label.should.equal(originalPublicKey.label);
-          final.owner.should.equal(actor.id);
-          callback();
-        }]
-      }, done);
+      const newPublicKey = {
+        publicKeyPem: mockData.goodKeyPair.publicKeyPem,
+        label: 'Key 01 Foo'
+      };
+
+      await brKey.addPublicKey({actor, publicKey: originalPublicKey});
+
+      newPublicKey.id = originalPublicKey.id;
+
+      // unsanitized publicKey owner should be deleted before API call
+      delete newPublicKey.owner;
+
+      let err;
+      try {
+        await brKey.updatePublicKey(
+          {actor: secondActor, publicKey: newPublicKey});
+      } catch(e) {
+        err = e;
+      }
+      should.exist(err);
+      err.name.should.equal('PermissionDenied');
+
+      const queryPublicKey = {id: originalPublicKey.id};
+      const record = await brKey.getPublicKey(
+        {actor, publicKey: queryPublicKey});
+
+      const final = record.publicKey;
+      final.publicKeyPem.should.equal(originalPublicKey.publicKeyPem);
+      final.label.should.equal(originalPublicKey.label);
+      final.owner.should.equal(keyOwner.id);
     });
 
   }); // describe regularUser
 
   describe('authenticated as adminUser', () => {
     const mockIdentity = mockData.identities.adminUser;
+    const keyOwner = mockIdentity.identity;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
 
     it('should update a key, excluding restricted fields', done => {
@@ -192,7 +181,7 @@ describe('bedrock-key API: updatePublicKey', () => {
       let queryPublicKey;
 
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      originalPublicKey.owner = actor.id;
+      originalPublicKey.owner = keyOwner.id;
       originalPublicKey.label = 'Key 00';
 
       async.auto({
@@ -222,8 +211,8 @@ describe('bedrock-key API: updatePublicKey', () => {
             originalPublicKey.publicKeyPem);
           finalPublicKey.publicKeyPem.should.equal(
             originalPublicKey.publicKeyPem);
-          origPublicKey.owner.should.equal(actor.id);
-          finalPublicKey.owner.should.equal(actor.id);
+          origPublicKey.owner.should.equal(keyOwner.id);
+          finalPublicKey.owner.should.equal(keyOwner.id);
           origPublicKey.sysStatus.should.equal(finalPublicKey.sysStatus);
           callback();
         }]
@@ -235,47 +224,39 @@ describe('bedrock-key API: updatePublicKey', () => {
   describe('authenticated as noPermissionUser', () => {
     const mockIdentity = mockData.identities.noPermissionUser;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
 
-    it('should return an error if actor lacks permission', done => {
-      const originalPublicKey = {};
-      const newPublicKey = {};
-      let secondActor;
+    it('should return an error if actor lacks permission', async () => {
       const mockIdentity2 = mockData.identities.regularUser;
+      const secondOwner = mockIdentity2.identity;
+      const secondActor = await brIdentity.getCapabilities(
+        {id: secondOwner.id});
 
+      const originalPublicKey = {};
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       originalPublicKey.label = 'Key 00';
+
+      const newPublicKey = {};
       newPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       newPublicKey.owner = 'foo';
       newPublicKey.label = 'Key 01';
 
-      async.auto({
-        setup: callback => {
-          // set up second identity w/ permission to add key
-          brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
-            secondActor = result;
-            callback(err, result);
-          });
-        },
-        insert: ['setup', (results, callback) => {
-          originalPublicKey.owner = secondActor.id;
-          brKey.addPublicKey(
-            {actor: secondActor, publicKey: originalPublicKey}, callback);
-        }],
-        test: ['insert', (results, callback) => {
-          newPublicKey.id = originalPublicKey.id;
-          brKey.updatePublicKey({actor, publicKey: newPublicKey}, err => {
-            should.exist(err);
-            err.name.should.equal('PermissionDenied');
-            callback();
-          });
-        }]
-      }, done);
+      originalPublicKey.owner = secondOwner.id;
+      await brKey.addPublicKey(
+        {actor: secondActor, publicKey: originalPublicKey});
+
+      newPublicKey.id = originalPublicKey.id;
+
+      let err;
+      try {
+        await brKey.updatePublicKey({actor, publicKey: newPublicKey});
+      } catch(e) {
+        err = e;
+      }
+      should.exist(err);
+      err.name.should.equal('PermissionDenied');
     });
 
   }); // describe: noPermissionUser
@@ -283,40 +264,35 @@ describe('bedrock-key API: updatePublicKey', () => {
   describe('User with no authentication', () => {
     const actor = {};
 
-    it('should return error when not authenticated', done => {
-      const originalPublicKey = {};
-      const newPublicKey = {};
-      let secondActor;
+    it('should return error when not authenticated', async () => {
       const mockIdentity2 = mockData.identities.regularUser;
+      const secondOwner = mockIdentity2.identity;
+      const secondActor = await brIdentity.getCapabilities(
+        {id: secondOwner.id});
 
+      const originalPublicKey = {};
       originalPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
+      originalPublicKey.owner = secondOwner.id;
       originalPublicKey.label = 'Key 00';
+
+      const newPublicKey = {};
       newPublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
       newPublicKey.owner = 'foo';
       newPublicKey.label = 'Key 01';
 
-      async.auto({
-        setup: callback => {
-          // set up second identity w/ permission to add key
-          brIdentity.get(null, mockIdentity2.identity.id, (err, result) => {
-            secondActor = result;
-            callback(err, result);
-          });
-        },
-        insert: ['setup', (results, callback) => {
-          originalPublicKey.owner = secondActor.id;
-          brKey.addPublicKey(
-            {actor: secondActor, publicKey: originalPublicKey}, callback);
-        }],
-        test: ['insert', (results, callback) => {
-          newPublicKey.id = originalPublicKey.id;
-          brKey.updatePublicKey({actor, publicKey: newPublicKey}, err => {
-            should.exist(err);
-            err.name.should.equal('PermissionDenied');
-            callback();
-          });
-        }]
-      }, done);
+      await brKey.addPublicKey(
+        {actor: secondActor, publicKey: originalPublicKey});
+
+      newPublicKey.id = originalPublicKey.id;
+
+      let err;
+      try {
+        await brKey.updatePublicKey({actor, publicKey: newPublicKey});
+      } catch(e) {
+        err = e;
+      }
+      should.exist(err);
+      err.name.should.equal('PermissionDenied');
     });
 
   }); // describe: no authentication

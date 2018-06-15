@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2017 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
@@ -12,172 +12,146 @@ const helpers = require('./helpers');
 const uuid = require('uuid/v4');
 
 describe('bedrock-key API: addPublicKey', () => {
-  before(done => {
-    helpers.prepareDatabase(mockData, done);
+  before(async () => {
+    await helpers.prepareDatabase(mockData);
   });
-  beforeEach(function(done) {
-    helpers.removeCollection('publicKey', done);
+  beforeEach(async () => {
+    await helpers.removeCollection('publicKey');
   });
 
   describe('authenticated as regularUser', () => {
     const mockIdentity = mockData.identities.regularUser;
+    const keyOwner = mockIdentity.identity;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
     describe('RSA key', () => {
-      it('should add a valid public key with no private key', done => {
+      it('should add a valid public key with no private key', async () => {
         const samplePublicKey = {};
 
         samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-        samplePublicKey.owner = actor.id;
+        samplePublicKey.owner = keyOwner.id;
 
-        async.auto({
-          insert: callback => {
-            brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback);
-          },
-          test: ['insert', (results, callback) => {
-            database.collections.publicKey.find({
-              'publicKey.owner': actor.id
-            }).toArray((err, result) => {
-              assertNoError(err);
-              should.exist(result);
-              result[0].publicKey.publicKeyPem.should.equal(
-                samplePublicKey.publicKeyPem);
-              callback();
-            });
-          }]
-        }, done);
+        await brKey.addPublicKey({actor, publicKey: samplePublicKey});
+
+        const result = await database.collections.publicKey.find(
+          {'publicKey.owner': keyOwner.id}).toArray();
+        should.exist(result);
+        result[0].publicKey.publicKeyPem.should.equal(
+          samplePublicKey.publicKeyPem);
       });
-      it('should add a valid public key with matching private key', done => {
+      it('should add a valid public key with matching private key',
+        async () => {
         const samplePublicKey = {};
         const privateKey = {};
 
         samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-        samplePublicKey.owner = actor.id;
+        samplePublicKey.owner = keyOwner.id;
         privateKey.privateKeyPem = mockData.goodKeyPair.privateKeyPem;
 
-        async.auto({
-          insert: callback => brKey.addPublicKey(
-            {actor, publicKey: samplePublicKey, privateKey}, callback),
-          test: ['insert', (results, callback) => {
-            database.collections.publicKey.find({
-              'publicKey.owner': actor.id
-            }).toArray((err, result) => {
-              assertNoError(err);
-              should.exist(result);
-              result[0].publicKey.publicKeyPem.should.equal(
-                samplePublicKey.publicKeyPem);
-              result[0].publicKey.privateKey.privateKeyPem.should.equal(
-                privateKey.privateKeyPem);
-              callback();
-            });
-          }]
-        }, done);
+        await brKey.addPublicKey(
+          {actor, publicKey: samplePublicKey, privateKey});
+        const result = await database.collections.publicKey.find(
+          {'publicKey.owner': keyOwner.id}).toArray();
+        should.exist(result);
+        result[0].publicKey.publicKeyPem.should.equal(
+          samplePublicKey.publicKeyPem);
+        result[0].publicKey.privateKey.privateKeyPem.should.equal(
+          privateKey.privateKeyPem);
       });
-      it('returns error if adding public key w/ bad private key', done => {
+      it('returns error if adding public key w/ bad private key', async () => {
         const samplePublicKey = {};
         const privateKey = {};
 
         samplePublicKey.publicKeyPem = mockData.badKeyPair.publicKeyPem;
-        samplePublicKey.owner = actor.id;
+        samplePublicKey.owner = keyOwner.id;
         privateKey.privateKeyPem = mockData.badKeyPair.privateKeyPem;
 
-        brKey.addPublicKey(
-          {actor, publicKey: samplePublicKey, privateKey}, err => {
-            should.exist(err);
-            err.name.should.equal('SyntaxError');
-            done();
-          });
+        let err;
+        try {
+          await brKey.addPublicKey(
+            {actor, publicKey: samplePublicKey, privateKey});
+        } catch(e) {
+          err = e;
+        }
+        should.exist(err);
+        err.name.should.equal('SyntaxError');
       });
     }); // end RSA key
     describe('Ed25519 key', () => {
-      it('should add a valid public key with no private key', done => {
+      it('should add a valid public key with no private key', async () => {
         const {publicKeyBase58} = mockData.goodKeyPairEd25519;
-        const {id: owner} = actor;
+        const {id: owner} = keyOwner;
         const samplePublicKey = {publicKeyBase58, owner};
 
-        async.auto({
-          insert: callback => brKey.addPublicKey(
-            {actor, publicKey: samplePublicKey}, callback),
-          test: ['insert', (results, callback) => {
-            database.collections.publicKey.find({
-              'publicKey.owner': actor.id
-            }).toArray((err, result) => {
-              assertNoError(err);
-              should.exist(result);
-              result[0].publicKey.publicKeyBase58.should.equal(publicKeyBase58);
-              callback();
-            });
-          }]
-        }, done);
+        await brKey.addPublicKey(
+          {actor, publicKey: samplePublicKey});
+
+        const result = await database.collections.publicKey.find(
+          {'publicKey.owner': keyOwner.id}).toArray();
+        should.exist(result);
+        result[0].publicKey.publicKeyBase58.should.equal(publicKeyBase58);
       });
-      it('should add a valid public key with matching private key', done => {
+      it('should add a valid public key with matching private key',
+        async () => {
         const {publicKeyBase58, privateKeyBase58} = mockData.goodKeyPairEd25519;
-        const {id: owner} = actor;
+        const {id: owner} = keyOwner;
         const samplePublicKey = {publicKeyBase58, owner};
         const samplePrivateKey = {privateKeyBase58};
 
-        async.auto({
-          insert: callback => brKey.addPublicKey(
-            {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
-            callback),
-          test: ['insert', (results, callback) => {
-            database.collections.publicKey.find({
-              'publicKey.owner': actor.id
-            }).toArray((err, result) => {
-              assertNoError(err);
-              should.exist(result);
-              result[0].publicKey.publicKeyBase58.should.equal(
-                samplePublicKey.publicKeyBase58);
-              result[0].publicKey.privateKey.privateKeyBase58.should.equal(
-                privateKeyBase58);
-              callback();
-            });
-          }]
-        }, done);
+        await brKey.addPublicKey(
+          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey});
+        const result = await database.collections.publicKey.find(
+          {'publicKey.owner': keyOwner.id}).toArray();
+        should.exist(result);
+        result[0].publicKey.publicKeyBase58.should.equal(
+          samplePublicKey.publicKeyBase58);
+        result[0].publicKey.privateKey.privateKeyBase58.should.equal(
+          privateKeyBase58);
       });
-      it('returns error if publicKey and privateKey do not match', done => {
+      it('returns error if publicKey and privateKey do not match', async () => {
         const {publicKeyBase58, privateKeyBase58} =
           mockData.badKeyPairEd25519NonMatching;
-        const {id: owner} = actor;
-        const samplePublicKey = {publicKeyBase58, owner};
+        const actor = brIdentity.getCapabilities({id: keyOwner.id});
+        const samplePublicKey = {publicKeyBase58, owner: keyOwner.id};
         const samplePrivateKey = {privateKeyBase58};
 
-        brKey.addPublicKey(
-          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
-          err => {
-            should.exist(err);
-            err.name.should.equal('InvalidStateError');
-            err.message.should.contain('Key pair does not match');
-            done();
-          });
+        let err;
+        try {
+          await brKey.addPublicKey(
+            {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey});
+        } catch(e) {
+          err = e;
+        }
+        should.exist(err);
+        err.name.should.equal('InvalidStateError');
+        err.message.should.contain('Key pair does not match');
       });
       // public key contains an invalid character
-      it('returns error on public key w/ invalid character', done => {
+      it('returns error on public key w/ invalid character', async () => {
         const {publicKeyBase58, privateKeyBase58} =
           mockData.badKeyPairEd25519InvalidPublicKey;
-        const {id: owner} = actor;
+        const {id: owner} = keyOwner;
         const samplePublicKey = {publicKeyBase58, owner};
         const samplePrivateKey = {privateKeyBase58};
 
-        brKey.addPublicKey(
-          {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey},
-          err => {
-            should.exist(err);
-            err.name.should.equal('SyntaxError');
-            err.cause.message.should.contain('Non-base58 character');
-            done();
-          });
+        let err;
+        try {
+          await brKey.addPublicKey(
+            {actor, publicKey: samplePublicKey, privateKey: samplePrivateKey});
+        } catch(e) {
+          err = e;
+        }
+        should.exist(err);
+        err.name.should.equal('SyntaxError');
+        err.cause.message.should.contain('Non-base58 character');
       });
       // public key is 1 char short
       it('returns error on public key w/ incorrect length', done => {
         const {publicKeyBase58, privateKeyBase58} =
           mockData.badKeyPairEd25519InvalidPublicKey2;
-        const {id: owner} = actor;
+        const {id: owner} = keyOwner;
         const samplePublicKey = {publicKeyBase58, owner};
         const samplePrivateKey = {privateKeyBase58};
 
@@ -195,7 +169,7 @@ describe('bedrock-key API: addPublicKey', () => {
       it('returns error on private key w/ invalid character', done => {
         const {publicKeyBase58, privateKeyBase58} =
           mockData.badKeyPairEd25519InvalidPrivateKey;
-        const {id: owner} = actor;
+        const {id: owner} = keyOwner;
         const samplePublicKey = {publicKeyBase58, owner};
         const samplePrivateKey = {privateKeyBase58};
 
@@ -212,7 +186,7 @@ describe('bedrock-key API: addPublicKey', () => {
       it('returns error on private key w/ incorrect length', done => {
         const {publicKeyBase58, privateKeyBase58} =
           mockData.badKeyPairEd25519InvalidPrivateKey2;
-        const {id: owner} = actor;
+        const {id: owner} = keyOwner;
         const samplePublicKey = {publicKeyBase58, owner};
         const samplePrivateKey = {privateKeyBase58};
 
@@ -232,7 +206,7 @@ describe('bedrock-key API: addPublicKey', () => {
       const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id + 1;
+      samplePublicKey.owner = keyOwner.id + 1;
 
       brKey.addPublicKey({actor, publicKey: samplePublicKey}, err => {
         should.exist(err);
@@ -246,14 +220,14 @@ describe('bedrock-key API: addPublicKey', () => {
       const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
+      samplePublicKey.owner = keyOwner.id;
 
       async.auto({
         insert: callback =>
           brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) => {
           database.collections.publicKey.find({
-            'publicKey.owner': actor.id
+            'publicKey.owner': keyOwner.id
           }).toArray((err, result) => {
             assertNoError(err);
             should.exist(result);
@@ -268,7 +242,7 @@ describe('bedrock-key API: addPublicKey', () => {
 
     it('should add non-default status, label, type, and id', done => {
       const {publicKeyPem} = mockData.goodKeyPair;
-      const {id: owner} = actor;
+      const {id: owner} = keyOwner;
       const samplePublicKey = {
         id: `https://non.default.id/${uuid()}`,
         label: 'non-default-label',
@@ -283,7 +257,7 @@ describe('bedrock-key API: addPublicKey', () => {
           brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) =>
           database.collections.publicKey.find({
-            'publicKey.owner': actor.id
+            'publicKey.owner': keyOwner.id
           }).toArray((err, result) => {
             assertNoError(err);
             should.exist(result);
@@ -299,7 +273,7 @@ describe('bedrock-key API: addPublicKey', () => {
 
     it('return DuplicateError on key with a duplicate `id`', done => {
       const {publicKeyPem} = mockData.goodKeyPair;
-      const {id: owner} = actor;
+      const {id: owner} = keyOwner;
       const samplePublicKey = {
         id: `https://non.default.id/${uuid()}`,
         owner,
@@ -324,26 +298,24 @@ describe('bedrock-key API: addPublicKey', () => {
 
   describe('authenticated as adminUser', () => {
     const mockIdentity = mockData.identities.adminUser;
+    const keyOwner = mockIdentity.identity;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
 
     it('should add a valid public key with no private key', done => {
       const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
+      samplePublicKey.owner = keyOwner.id;
 
       async.auto({
         insert: callback =>
           brKey.addPublicKey({actor, publicKey: samplePublicKey}, callback),
         test: ['insert', (results, callback) =>
           database.collections.publicKey.find({
-            'publicKey.owner': actor.id
+            'publicKey.owner': keyOwner.id
           }).toArray((err, result) => {
             assertNoError(err);
             should.exist(result);
@@ -358,7 +330,7 @@ describe('bedrock-key API: addPublicKey', () => {
       const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id + 1;
+      samplePublicKey.owner = keyOwner.id + 1;
 
       async.auto({
         insert: callback =>
@@ -380,19 +352,17 @@ describe('bedrock-key API: addPublicKey', () => {
 
   describe('authenticated as noPermissionUser', () => {
     const mockIdentity = mockData.identities.noPermissionUser;
+    const keyOwner = mockIdentity.identity;
     let actor;
-    before(done => {
-      brIdentity.get(null, mockIdentity.identity.id, (err, result) => {
-        actor = result;
-        done(err);
-      });
+    before(async () => {
+      actor = await brIdentity.getCapabilities({id: mockIdentity.identity.id});
     });
 
     it('should return error when adding public key w/o permissions', done => {
       const samplePublicKey = {};
 
       samplePublicKey.publicKeyPem = mockData.goodKeyPair.publicKeyPem;
-      samplePublicKey.owner = actor.id;
+      samplePublicKey.owner = keyOwner.id;
 
       brKey.addPublicKey({actor, publicKey: samplePublicKey}, err => {
         should.exist(err);
