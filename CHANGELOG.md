@@ -1,5 +1,10 @@
 # bedrock-key ChangeLog
 
+# 5.1.1 - 2018-06-25
+
+### Fixed
+- Fix internal `addPublicKey` call.
+
 # 5.1.0 - 2018-06-15
 
 ### Added
