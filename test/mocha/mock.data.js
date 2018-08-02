@@ -234,9 +234,9 @@ mock.badKeyPairEd25519InvalidPublicKey = {
   privateKeyBase58: '3ztCNwkbzLXyAdtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
     'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuqK'
 };
-// public key is 1 char short
+// public key is 1 byte short
 mock.badKeyPairEd25519InvalidPublicKey2 = {
-  publicKeyBase58: 'BveYC5JaPU5zjNhqDHfVq1QRibbzAznNLfUigAibapX',
+  publicKeyBase58: 'tankraiLNfERZtzqtsmLrbMoMMaUTYxsdLo4puau9L',
   privateKeyBase58: '3ztCNwkbzLXyAdtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
     'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuqK'
 };
@@ -246,9 +246,9 @@ mock.badKeyPairEd25519InvalidPrivateKey = {
   privateKeyBase58: '3ztCNwkbzLXy$dtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
     'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuqK'
 };
-// private key is 1 char short
+// private key is 1 byte short
 mock.badKeyPairEd25519InvalidPrivateKey2 = {
   publicKeyBase58: 'BveYC5JaPU5zjNhqDHfVq1QRibbzAznNLfUigAibapXj',
-  privateKeyBase58: '3ztCNwkbzLXyAdtzz9RCEARixHmv8kLZS7Y1wrCw3byLGpUEPZ3' +
-    'bbYoUFsTMUv3wZH6f6eTUdp8YioDNjtBZtuq'
+  privateKeyBase58: 'gPvnJPZrEwbUZNkVomT79w5yUpLHi5tJUJuKmgQaDTMgP5ozDhT' +
+    'sRRaN3NNrppLcQauauSV1dxde7PjzJ2waW'
 };
