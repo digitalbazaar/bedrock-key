@@ -1,5 +1,7 @@
 # bedrock-key ChangeLog
 
+# 5.1.2 - 2018-08-02
+
 ### Fixed
 - Decode base58 before checking key length.
 
