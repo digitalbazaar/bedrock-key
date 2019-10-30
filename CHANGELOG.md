@@ -1,5 +1,8 @@
 # bedrock-key ChangeLog
 
+### Changed
+- Update to latest bedrock events API.
+
 # 5.1.2 - 2018-08-02
 
 ### Fixed
