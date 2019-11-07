@@ -21,7 +21,7 @@
   "homepage": "https://github.com/digitalbazaar/bedrock-key",
   "dependencies": {
     "assert-plus": "^1.0.0",
-    "async": "^2.6.0",
+    "async": "^2.6.3",
     "bs58": "^4.0.1",
     "signature-algorithms": "^1.0.0"
   },
