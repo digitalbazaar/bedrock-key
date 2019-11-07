@@ -1,5 +1,7 @@
 # bedrock-key ChangeLog
 
+# 5.1.3 - 2019-11-07
+
 ### Changed
 - Update to latest bedrock events API.
 
