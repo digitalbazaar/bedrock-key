@@ -29,7 +29,7 @@
     "bedrock-redis": "^3.0.0"
   },
   "peerDependencies": {
-    "bedrock": "1.12.1 - 2.x",
+    "bedrock": "1.12.1 - 3.x",
     "bedrock-mongodb": "3.x - 6.x",
     "bedrock-permission": "^2.4.2"
   },

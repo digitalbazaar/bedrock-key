@@ -1,5 +1,8 @@
 # bedrock-key ChangeLog
 
+### Changed
+- Update max bedrock dependency.
+
 # 5.1.3 - 2019-11-07
 
 ### Changed
