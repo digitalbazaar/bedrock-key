@@ -4,7 +4,9 @@
   "description": "Bedrock key",
   "main": "./lib",
   "scripts": {
-    "test": "node ./bedrock/test.js test"
+    "test": "node ./bedrock/test.js test",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -23,7 +25,8 @@
     "assert-plus": "^1.0.0",
     "async": "^2.6.3",
     "bs58": "^4.0.1",
-    "signature-algorithms": "^1.0.0"
+    "signature-algorithms": "^1.0.0",
+    "snyk": "^1.316.2"
   },
   "optionalDependencies": {
     "bedrock-redis": "^3.0.0"
@@ -35,5 +38,6 @@
   },
   "engines": {
     "node": ">=8"
-  }
+  },
+  "snyk": true
 }
